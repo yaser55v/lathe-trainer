@@ -91,6 +91,18 @@ export default defineConfig(({ mode }) => {
       iwsdkDev({
         emulator: {
           device: "metaQuest3",
+          // 'always' so the XR emulator is injected on Netlify and any other
+          // production domain — not just localhost. Without this, desktop
+          // browsers on the deployed site have no WebXR and the Enter XR
+          // button never appears.
+          activation: "always",
+          // Inject the emulator into the production bundle (dist/).
+          // The userAgentException below ensures real Quest browsers skip
+          // the emulator and use native WebXR instead.
+          injectOnBuild: true,
+          // Skip injection on actual Meta Quest / OculusBrowser so headsets
+          // use native WebXR (not the emulated one).
+          userAgentException: /OculusBrowser/,
         },
         ai: { tools: ["claude"] },
         verbose: true,
