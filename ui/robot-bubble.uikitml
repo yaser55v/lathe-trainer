@@ -1,0 +1,69 @@
+<style>
+  .bubble-root {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 56;
+    background-color: rgba(18, 18, 28, 0.94);
+    border-color: rgba(0, 212, 255, 0.22);
+    border-width: 0.08;
+    border-radius: 3.5;
+  }
+
+  /* Coloured accent bar at the top */
+  .bubble-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.4;
+    padding-top: 1.6;
+    padding-bottom: 1.6;
+    padding-left: 2.4;
+    padding-right: 2.4;
+    background-color: rgba(0, 212, 255, 0.08);
+    border-width: 0 0 0.06 0;
+    border-color: rgba(0, 212, 255, 0.16) transparent transparent transparent;
+    border-top-left-radius: 3.5;
+    border-top-right-radius: 3.5;
+  }
+
+  .bubble-dot {
+    width: 1.1;
+    height: 1.1;
+    border-radius: 10;
+    background-color: rgba(0, 212, 255, 0.9);
+  }
+
+  .bubble-label {
+    font-size: 1.9;
+    font-weight: 600;
+    font-family: inter;
+    color: rgba(0, 212, 255, 0.85);
+    flex-grow: 1;
+  }
+
+  /* Main text body */
+  .bubble-body {
+    padding-top: 2.2;
+    padding-bottom: 2.4;
+    padding-left: 2.6;
+    padding-right: 2.6;
+  }
+
+  .bubble-text {
+    font-size: 2.3;
+    font-family: inter;
+    line-height: 1.55;
+    color: rgba(238, 238, 238, 0.92);
+  }
+</style>
+
+<div class="bubble-root">
+  <div class="bubble-header">
+    <div class="bubble-dot"></div>
+    <div class="bubble-label">Assistant</div>
+  </div>
+  <div class="bubble-body">
+    <div id="bubble-text" class="bubble-text">Ready.</div>
+  </div>
+</div>

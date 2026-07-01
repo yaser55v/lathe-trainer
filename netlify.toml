@@ -1,0 +1,28 @@
+# Netlify configuration for Lathe Trainer XR Digital Twin
+
+[build]
+  command   = "pnpm build"
+  publish   = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# ── API Proxy ──────────────────────────────────────────────────────────────
+# In development, Vite proxies /v1/* → https://integrate.api.nvidia.com/v1/*
+# On Netlify there is no Vite dev-server, so we replicate that redirect here.
+# This ensures the AI assistant API calls work identically in production.
+[[redirects]]
+  from   = "/v1/*"
+  to     = "https://integrate.api.nvidia.com/v1/:splat"
+  status = 200
+  force  = true
+
+  [redirects.headers]
+    X-Forwarded-Host = "integrate.api.nvidia.com"
+
+# ── SPA fallback ───────────────────────────────────────────────────────────
+# All other unmatched routes serve index.html for client-side navigation.
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200
