@@ -1,0 +1,316 @@
+[
+  {
+    "object_name": "a45b6f53b9cc462a82863bb5898bf730.fbx",
+    "object_type": "EMPTY",
+    "parent_name": "Sketchfab_model",
+    "collection_names": [
+      "Collection"
+    ],
+    "material_names": []
+  },
+  {
+    "object_name": "Ears",
+    "object_type": "EMPTY",
+    "parent_name": "Robot Origin",
+    "collection_names": [
+      "Collection"
+    ],
+    "material_names": []
+  },
+  {
+    "object_name": "Ears_Black_Matt_0",
+    "object_type": "MESH",
+    "parent_name": "Ears",
+    "collection_names": [
+      "Collection"
+    ],
+    "material_names": [
+      "Black_Matt"
+    ]
+  },
+  {
+    "object_name": "Empty",
+    "object_type": "EMPTY",
+    "parent_name": "Robot Origin",
+    "collection_names": [
+      "Collection"
+    ],
+    "material_names": []
+  },
+  {
+    "object_name": "Eyes",
+    "object_type": "EMPTY",
+    "parent_name": "Empty",
+    "collection_names": [
+      "Collection"
+    ],
+    "material_names": []
+  },
+  {
+    "object_name": "Eyes_Blue_Light_0",
+    "object_type": "MESH",
+    "parent_name": "Eyes",
+    "collection_names": [
+      "Collection"
+    ],
+    "material_names": [
+      "Blue_Light"
+    ]
+  },
+  {
+    "object_name": "Eyes_Blue_Light_0_NEW",
+    "object_type": "MESH",
+    "parent_name": "Eyes",
+    "collection_names": [
+      "Collection"
+    ],
+    "material_names": [
+      "Blue_Light"
+    ]
+  },
+  {
+    "object_name": "Hand origin",
+    "object_type": "EMPTY",
+    "parent_name": "Robot Origin",
+    "collection_names": [
+      "Collection"
+    ],
+    "material_names": []
+  },
+  {
+    "object_name": "Hand origin.002",
+    "object_type": "EMPTY",
+    "parent_name": "Robot Origin",
+    "collection_names": [
+      "Collection"
+    ],
+    "material_names": []
+  },
+  {
+    "object_name": "hANDS",
+    "object_type": "EMPTY",
+    "parent_name": "Hand origin",
+    "collection_names": [
+      "Collection"
+    ],
+    "material_names": []
+  },
+  {
+    "object_name": "hANDS.002",
+    "object_type": "EMPTY",
+    "parent_name": "Hand origin.002",
+    "collection_names": [
+      "Collection"
+    ],
+    "material_names": []
+  },
+  {
+    "object_name": "hANDS.002_White_Glossy_0",
+    "object_type": "MESH",
+    "parent_name": "hANDS.002",
+    "collection_names": [
+      "Collection"
+    ],
+    "material_names": [
+      "White_Glossy"
+    ]
+  },
+  {
+    "object_name": "hANDS_White_Glossy_0",
+    "object_type": "MESH",
+    "parent_name": "hANDS",
+    "collection_names": [
+      "Collection"
+    ],
+    "material_names": [
+      "White_Glossy"
+    ]
+  },
+  {
+    "object_name": "Mouth",
+    "object_type": "EMPTY",
+    "parent_name": "Robot Origin",
+    "collection_names": [
+      "Collection"
+    ],
+    "material_names": []
+  },
+  {
+    "object_name": "Mouth_Blue_Light_0",
+    "object_type": "MESH",
+    "parent_name": "Mouth",
+    "collection_names": [
+      "Collection"
+    ],
+    "material_names": [
+      "Blue_Light"
+    ]
+  },
+  {
+    "object_name": "Object_2",
+    "object_type": "EMPTY",
+    "parent_name": "a45b6f53b9cc462a82863bb5898bf730.fbx",
+    "collection_names": [
+      "Collection"
+    ],
+    "material_names": []
+  },
+  {
+    "object_name": "Robot",
+    "object_type": "EMPTY",
+    "parent_name": "Robot Origin",
+    "collection_names": [
+      "Collection"
+    ],
+    "material_names": []
+  },
+  {
+    "object_name": "Robot Origin",
+    "object_type": "EMPTY",
+    "parent_name": "RootNode",
+    "collection_names": [
+      "Collection"
+    ],
+    "material_names": []
+  },
+  {
+    "object_name": "Robot_Black_Matt_0",
+    "object_type": "MESH",
+    "parent_name": "Robot",
+    "collection_names": [
+      "Collection"
+    ],
+    "material_names": [
+      "Black_Matt"
+    ]
+  },
+  {
+    "object_name": "Robot_Blue_Light_0",
+    "object_type": "MESH",
+    "parent_name": "Robot",
+    "collection_names": [
+      "Collection"
+    ],
+    "material_names": [
+      "Blue_Light"
+    ]
+  },
+  {
+    "object_name": "Robot_White_Glossy_0",
+    "object_type": "MESH",
+    "parent_name": "Robot",
+    "collection_names": [
+      "Collection"
+    ],
+    "material_names": [
+      "White_Glossy"
+    ]
+  },
+  {
+    "object_name": "RootNode",
+    "object_type": "EMPTY",
+    "parent_name": "Object_2",
+    "collection_names": [
+      "Collection"
+    ],
+    "material_names": []
+  },
+  {
+    "object_name": "Sketchfab_model",
+    "object_type": "EMPTY",
+    "parent_name": null,
+    "collection_names": [
+      "Collection"
+    ],
+    "material_names": []
+  },
+  {
+    "object_name": "Wave",
+    "object_type": "EMPTY",
+    "parent_name": "Robot Origin",
+    "collection_names": [
+      "Collection"
+    ],
+    "material_names": []
+  },
+  {
+    "object_name": "Wave.001",
+    "object_type": "EMPTY",
+    "parent_name": "Robot Origin",
+    "collection_names": [
+      "Collection"
+    ],
+    "material_names": []
+  },
+  {
+    "object_name": "Wave.001_Blue_Light_0",
+    "object_type": "MESH",
+    "parent_name": "Wave.001",
+    "collection_names": [
+      "Collection"
+    ],
+    "material_names": [
+      "Blue_Light"
+    ]
+  },
+  {
+    "object_name": "Wave.002",
+    "object_type": "EMPTY",
+    "parent_name": "Robot Origin",
+    "collection_names": [
+      "Collection"
+    ],
+    "material_names": []
+  },
+  {
+    "object_name": "Wave.002_Blue_Light_0",
+    "object_type": "MESH",
+    "parent_name": "Wave.002",
+    "collection_names": [
+      "Collection"
+    ],
+    "material_names": [
+      "Blue_Light"
+    ]
+  },
+  {
+    "object_name": "Wave.003",
+    "object_type": "EMPTY",
+    "parent_name": "Robot Origin",
+    "collection_names": [
+      "Collection"
+    ],
+    "material_names": []
+  },
+  {
+    "object_name": "Wave.003_Blue_Light_0",
+    "object_type": "MESH",
+    "parent_name": "Wave.003",
+    "collection_names": [
+      "Collection"
+    ],
+    "material_names": [
+      "Blue_Light"
+    ]
+  },
+  {
+    "object_name": "Wave_Blue_Light_0",
+    "object_type": "MESH",
+    "parent_name": "Wave",
+    "collection_names": [
+      "Collection"
+    ],
+    "material_names": [
+      "Blue_Light"
+    ]
+  },
+  {
+    "object_name": "Waves",
+    "object_type": "EMPTY",
+    "parent_name": "Robot Origin",
+    "collection_names": [
+      "Collection"
+    ],
+    "material_names": []
+  }
+]

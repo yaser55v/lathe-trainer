@@ -1,0 +1,120 @@
+<style>
+  .xr-action-root {
+    display: flex;
+    flex-direction: column;
+    width: 42;
+    padding: 2.2;
+    gap: 1.2;
+    background-color: rgba(26, 26, 26, 0.96);
+    border-color: rgba(255, 255, 255, 0.14);
+    border-width: 0.08;
+    border-radius: 3;
+  }
+
+  .xr-action-header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45;
+    padding-bottom: 0.4;
+  }
+
+  .xr-action-title {
+    font-size: 2.45;
+    font-weight: 700;
+    font-family: inter;
+    color: rgba(238, 238, 238, 0.94);
+  }
+
+  .xr-action-copy {
+    font-size: 1.55;
+    font-family: inter;
+    line-height: 1.25;
+    color: rgba(218, 218, 218, 0.68);
+  }
+
+  .xr-action-row {
+    display: flex;
+    flex-direction: row;
+    gap: 0.9;
+  }
+
+  .xr-action-btn {
+    width: 18.35;
+    height: 8.2;
+    padding-top: 1.1;
+    padding-bottom: 1.1;
+    padding-left: 1.2;
+    padding-right: 1.2;
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.14);
+    border-width: 0.08;
+    border-radius: 1.4;
+    font-size: 1.75;
+    font-weight: 600;
+    font-family: inter;
+    color: rgba(238, 238, 238, 0.94);
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .xr-action-btn:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.14);
+  }
+
+  .xr-action-primary {
+    background-color: rgba(0, 122, 255, 0.2);
+    border-color: rgba(0, 122, 255, 0.38);
+    color: rgba(238, 238, 238, 0.94);
+  }
+
+  .xr-action-primary:hover {
+    background-color: rgba(0, 122, 255, 0.4);
+    border-color: rgba(0, 122, 255, 0.8);
+  }
+
+  .xr-action-danger {
+    color: rgba(255, 80, 80, 0.90);
+  }
+
+  .xr-action-close {
+    height: 5.4;
+    margin-top: 0.4;
+    padding-top: 1;
+    padding-bottom: 1;
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.14);
+    border-width: 0.08;
+    border-radius: 1.4;
+    font-size: 1.7;
+    font-weight: 600;
+    font-family: inter;
+    color: rgba(238, 238, 238, 0.94);
+    cursor: pointer;
+  }
+
+  .xr-action-close:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+  }
+</style>
+
+<div class="xr-action-root">
+  <div class="xr-action-header">
+    <div class="xr-action-title">Tool Panel</div>
+    <div id="xr-action-copy" class="xr-action-copy">
+      Choose an assistant tool.
+    </div>
+  </div>
+
+  <div class="xr-action-row">
+    <button id="xr-action-write" class="xr-action-btn xr-action-primary">Text</button>
+    <button id="xr-action-image" class="xr-action-btn">Image</button>
+  </div>
+
+  <div class="xr-action-row">
+    <button id="xr-action-settings" class="xr-action-btn">Settings</button>
+    <button id="xr-action-language" class="xr-action-btn">Language</button>
+  </div>
+
+  <button id="xr-action-close" class="xr-action-close">Close</button>
+</div>

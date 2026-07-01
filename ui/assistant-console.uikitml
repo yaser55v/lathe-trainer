@@ -1,0 +1,154 @@
+<style>
+  .console-root {
+    display: flex;
+    flex-direction: column;
+    width: 72;
+    background-color: rgba(26, 26, 26, 0.96);
+    border-color: rgba(255, 255, 255, 0.14);
+    border-width: 0.08;
+    border-radius: 3;
+  }
+
+  /* ── Header bar ── */
+  .console-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.6;
+    padding-top: 2;
+    padding-bottom: 2;
+    padding-left: 3;
+    padding-right: 2;
+    background-color: rgba(42, 43, 48, 0.55);
+    border-width: 0 0 0.08 0;
+    border-color: rgba(255, 255, 255, 0.10) transparent transparent transparent;
+    border-top-left-radius: 3;
+    border-top-right-radius: 3;
+  }
+
+  .console-dot {
+    width: 1.2;
+    height: 1.2;
+    border-radius: 10;
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .console-dot-thinking {
+    width: 1.2;
+    height: 1.2;
+    border-radius: 10;
+    background-color: rgba(74, 144, 255, 1);
+  }
+
+  .console-dot-speaking {
+    width: 1.2;
+    height: 1.2;
+    border-radius: 10;
+    background-color: rgba(0, 212, 255, 1);
+  }
+
+  .console-dot-listening {
+    width: 1.2;
+    height: 1.2;
+    border-radius: 10;
+    background-color: rgba(76, 255, 145, 1);
+  }
+
+  .console-title {
+    font-size: 2.2;
+    font-weight: 600;
+    font-family: inter;
+    color: rgba(238, 238, 238, 0.94);
+    flex-grow: 1;
+  }
+
+  .console-status {
+    font-size: 1.8;
+    font-family: inter;
+    color: rgba(218, 218, 218, 0.58);
+  }
+
+  /* ── Response area ── */
+  .console-response {
+    padding-top: 2.4;
+    padding-bottom: 2.4;
+    padding-left: 3;
+    padding-right: 3;
+    min-height: 8;
+  }
+
+  .console-response-text {
+    font-size: 2.4;
+    font-family: inter;
+    line-height: 1.5;
+    color: rgba(238, 238, 238, 0.90);
+  }
+
+  .console-placeholder {
+    font-size: 2.2;
+    font-family: inter;
+    color: rgba(218, 218, 218, 0.42);
+    font-style: italic;
+  }
+
+  /* ── Input row ── */
+  .console-input-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.6;
+    padding-top: 1.8;
+    padding-bottom: 1.8;
+    padding-left: 3;
+    padding-right: 2;
+    border-width: 0.08 0 0 0;
+    border-color: rgba(255, 255, 255, 0.10) transparent transparent transparent;
+  }
+
+  .console-input-label {
+    font-size: 2;
+    font-family: inter;
+    color: rgba(218, 218, 218, 0.50);
+    flex-grow: 1;
+  }
+
+  .console-mic-btn {
+    width: 5.5;
+    height: 5.5;
+    border-radius: 10;
+    border-width: 0.08;
+    border-color: rgba(76, 255, 145, 0.4);
+    background-color: rgba(76, 255, 145, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .console-mic-btn:hover {
+    background-color: rgba(76, 255, 145, 0.18);
+  }
+
+  .console-mic-icon {
+    width: 2.8;
+    height: 2.8;
+    color: rgba(76, 255, 145, 0.9);
+  }
+</style>
+
+<div class="console-root">
+  <div class="console-header">
+    <div id="console-dot" class="console-dot"></div>
+    <div class="console-title">Assistant</div>
+    <div id="console-status" class="console-status">Ready</div>
+  </div>
+  <div class="console-response">
+    <div id="console-response-text" class="console-response-text">Tap the robot or speak to begin.</div>
+  </div>
+  <div class="console-input-row">
+    <div class="console-input-label">Voice primary · type below ↓</div>
+    <button id="console-mic-btn" class="console-mic-btn">
+      <Mic id="console-mic-icon" class="console-mic-icon"></Mic>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,140 @@
+<style>
+  /* ── Segmented Control container ── */
+  .vmenu-root {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-top: 1.6;
+    padding-bottom: 1.6;
+    padding-left: 1.6;
+    padding-right: 1.6;
+    gap: 0.8;
+    background-color: rgba(25, 25, 25, 1);
+    border-color: rgba(255, 255, 255, 0.12);
+    border-width: 0.08;
+    border-radius: 14;
+  }
+
+  /* ── Chip button — outer wrapper ── */
+  .vmenu-btn {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background-color: transparent;
+    border-width: 0;
+    cursor: pointer;
+  }
+
+  /* ── Chip inner — HORIZONTAL: icon + label in a row ── */
+  /* Meta Horizon inactive: transparent, no bg */
+  .vmenu-chip {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 1.4;
+    padding-top: 1.8;
+    padding-bottom: 1.8;
+    padding-left: 2.8;
+    padding-right: 2.8;
+    border-radius: 10;
+    background-color: transparent;
+  }
+
+  /* Meta Horizon active: white pill with dark content */
+  .vmenu-chip-active {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 1.4;
+    padding-top: 1.8;
+    padding-bottom: 1.8;
+    padding-left: 2.8;
+    padding-right: 2.8;
+    border-radius: 10;
+    background-color: rgba(255, 255, 255, 0.92);
+  }
+
+  /* ── Icons ── */
+  .vmenu-icon {
+    width: 4.2;
+    height: 4.2;
+    color: rgba(255, 255, 255, 0.88);
+  }
+
+  .vmenu-icon-active {
+    width: 4.2;
+    height: 4.2;
+    color: rgba(30, 30, 30, 1);
+  }
+
+  /* ── Labels ── */
+  .vmenu-label {
+    font-size: 2;
+    font-weight: 500;
+    font-family: inter;
+    color: rgba(255, 255, 255, 0.88);
+  }
+
+  .vmenu-label-active {
+    font-size: 2;
+    font-weight: 700;
+    font-family: inter;
+    color: rgba(30, 30, 30, 1);
+  }
+
+  /* ── Thin vertical separator ── */
+  .vmenu-sep {
+    width: 0.08;
+    height: 6;
+    background-color: rgba(255, 255, 255, 0.18);
+    margin-left: 0.4;
+    margin-right: 0.4;
+  }
+</style>
+
+<div class="vmenu-root">
+
+  <button id="vn-explore" class="vmenu-btn">
+    <div id="vn-explore-chip" class="vmenu-chip-active">
+      <Crosshair id="vn-explore-icon" class="vmenu-icon-active"></Crosshair>
+      <div id="vn-explore-label" class="vmenu-label-active">Explore</div>
+    </div>
+  </button>
+
+  <button id="vn-panorama" class="vmenu-btn">
+    <div id="vn-panorama-chip" class="vmenu-chip">
+      <Globe id="vn-panorama-icon" class="vmenu-icon"></Globe>
+      <div id="vn-panorama-label" class="vmenu-label">Panorama</div>
+    </div>
+  </button>
+
+  <div class="vmenu-sep"></div>
+
+  <button id="vn-ask-ai" class="vmenu-btn">
+    <div id="vn-ask-ai-chip" class="vmenu-chip">
+      <Bot id="vn-ask-ai-icon" class="vmenu-icon"></Bot>
+      <div id="vn-ask-ai-label" class="vmenu-label">Ask AI</div>
+    </div>
+  </button>
+
+  <div class="vmenu-sep"></div>
+
+  <button id="vn-state" class="vmenu-btn">
+    <div id="vn-state-chip" class="vmenu-chip">
+      <Activity id="vn-state-icon" class="vmenu-icon"></Activity>
+      <div id="vn-state-label" class="vmenu-label">State</div>
+    </div>
+  </button>
+
+  <button id="vn-settings" class="vmenu-btn">
+    <div id="vn-settings-chip" class="vmenu-chip">
+      <Settings id="vn-settings-icon" class="vmenu-icon"></Settings>
+      <div id="vn-settings-label" class="vmenu-label">Settings</div>
+    </div>
+  </button>
+
+</div>

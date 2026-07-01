@@ -1,0 +1,350 @@
+<style>
+  /* ── Panel surface — Meta Horizon gradient midpoint solid ── */
+  .explore-root {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 68;
+    background-color: rgba(14, 14, 14, 1);
+    border-color: rgba(255, 255, 255, 0.12);
+    border-width: 0.08;
+    border-radius: 4;
+  }
+
+  /* ── Section header — Meta Horizon: bold label + action right ── */
+  .explore-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 3;
+    padding-bottom: 2;
+    padding-left: 3.2;
+    padding-right: 3.2;
+  }
+
+  .explore-header-left {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.4;
+  }
+
+  /* Section label — Headline 2: font-weight 700, rgba(255,255,255,0.9) */
+  .explore-title {
+    font-size: 2.8;
+    font-weight: 700;
+    font-family: inter;
+    color: rgba(255, 255, 255, 0.90);
+  }
+
+  /* "See all" / close — Body 2: font-weight 500, rgba(255,255,255,0.7) */
+  .explore-close-btn {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding-top: 1;
+    padding-bottom: 1;
+    padding-left: 1.8;
+    padding-right: 1.8;
+    background-color: transparent;
+    border-width: 0;
+    border-radius: 8;
+    cursor: pointer;
+  }
+
+  .explore-close-btn:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .explore-close-text {
+    font-size: 1.8;
+    font-weight: 500;
+    font-family: inter;
+    color: rgba(255, 255, 255, 0.70);
+  }
+
+  /* ── Thin separator under header ── */
+  .explore-divider {
+    width: 62;
+    height: 0.08;
+    background-color: rgba(255, 255, 255, 0.10);
+    align-self: center;
+    margin-bottom: 0.4;
+  }
+
+  /* ── Card shelf body ── */
+  .explore-body {
+    display: flex;
+    flex-direction: column;
+    padding-top: 2.4;
+    padding-bottom: 3;
+    padding-left: 3.2;
+    padding-right: 3.2;
+    gap: 2.8;
+  }
+
+  /* ── Grid row — 3 cards ── */
+  .grid-row {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 2;
+  }
+
+  /* ── Image Card — Meta Horizon: padding: 8, border-radius: 8 ── */
+  /* card width: (68 - 6.4 padding - 4 gaps) / 3 = 19.2 → 19 */
+  .part-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 19;
+    padding: 0;
+    background-color: rgba(25, 25, 25, 1);
+    border-color: rgba(255, 255, 255, 0.08);
+    border-width: 0.08;
+    border-radius: 2;
+    cursor: pointer;
+  }
+
+  .part-card:hover {
+    border-color: rgba(255, 255, 255, 0.25);
+    background-color: rgba(68, 68, 68, 1);
+  }
+
+  /* ── Tile (image area) — fixed height, contains icon + badge + check ── */
+  .card-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 19;
+    height: 13;
+    border-radius: 2;
+    background-color: rgba(38, 38, 38, 1);
+  }
+
+  /* ── Top row inside tile: badge left, check right ── */
+  .tile-top {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding-top: 1.2;
+    padding-left: 1.2;
+    padding-right: 1.2;
+  }
+
+  /* Badge — Meta Horizon: rgba(39,39,39,0.9), border-radius: 8 */
+  .tile-badge {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding-top: 0.5;
+    padding-bottom: 0.5;
+    padding-left: 1.2;
+    padding-right: 1.2;
+    background-color: rgba(39, 39, 39, 0.90);
+    border-radius: 2;
+  }
+
+  .tile-badge-text {
+    font-size: 1.4;
+    font-weight: 700;
+    font-family: inter;
+    color: rgba(255, 255, 255, 0.90);
+  }
+
+  /* Check indicator — Meta Horizon: white circle */
+  .tile-check {
+    width: 3;
+    height: 3;
+    border-radius: 900;
+    background-color: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.20);
+    border-width: 0.08;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .tile-check-active {
+    width: 3;
+    height: 3;
+    border-radius: 900;
+    background-color: rgba(255, 255, 255, 0.92);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Icon centered in tile */
+  .tile-icon-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    padding-bottom: 1;
+  }
+
+  .icon-cyan   { width: 7; height: 7; color: rgba(0,   212, 255, 1); }
+  .icon-blue   { width: 7; height: 7; color: rgba(80,  155, 255, 1); }
+  .icon-green  { width: 7; height: 7; color: rgba(55,  235, 125, 1); }
+  .icon-amber  { width: 7; height: 7; color: rgba(255, 190,  40, 1); }
+  .icon-violet { width: 7; height: 7; color: rgba(195, 140, 255, 1); }
+  .icon-slate  { width: 7; height: 7; color: rgba(220, 225, 235, 1); }
+
+  /* ── Metadata below tile — Meta Horizon pattern ── */
+  .card-meta {
+    display: flex;
+    flex-direction: column;
+    width: 19;
+    padding-top: 1.4;
+    padding-bottom: 1.6;
+    padding-left: 1.4;
+    padding-right: 1.4;
+    gap: 0.4;
+  }
+
+  /* Primary — Body 1: font-weight 500, 14px, rgba(255,255,255,0.9) */
+  .meta-primary {
+    font-size: 1.9;
+    font-weight: 500;
+    font-family: inter;
+    color: rgba(255, 255, 255, 0.90);
+  }
+
+  /* Secondary — Body 2: font-weight 500, 12px, rgba(255,255,255,0.7) */
+  .meta-secondary {
+    font-size: 1.6;
+    font-weight: 500;
+    font-family: inter;
+    color: rgba(255, 255, 255, 0.70);
+  }
+</style>
+
+<div class="explore-root">
+
+  <!-- Section header -->
+  <div class="explore-header">
+    <div class="explore-title">Explore Parts</div>
+    <button id="explore-close" class="explore-close-btn">
+      <div class="explore-close-text">Done</div>
+    </button>
+  </div>
+
+  <div class="explore-divider"></div>
+
+  <!-- Card shelf body -->
+  <div class="explore-body">
+
+    <!-- Row 1 -->
+    <div class="grid-row">
+
+      <button id="card-chuck" class="part-card">
+        <div class="card-tile">
+          <div class="tile-top">
+            <div class="tile-badge"><div class="tile-badge-text">Hold</div></div>
+            <div id="check-chuck" class="tile-check"></div>
+          </div>
+          <div class="tile-icon-wrap">
+            <Disc id="vn-chuck-icon" class="icon-cyan"></Disc>
+          </div>
+        </div>
+        <div class="card-meta">
+          <div class="meta-primary">Chuck</div>
+          <div class="meta-secondary">Workholding</div>
+        </div>
+      </button>
+
+      <button id="card-tailstock" class="part-card">
+        <div class="card-tile">
+          <div class="tile-top">
+            <div class="tile-badge"><div class="tile-badge-text">Hold</div></div>
+            <div id="check-tailstock" class="tile-check"></div>
+          </div>
+          <div class="tile-icon-wrap">
+            <Target id="vn-tailstock-icon" class="icon-blue"></Target>
+          </div>
+        </div>
+        <div class="card-meta">
+          <div class="meta-primary">Tailstock</div>
+          <div class="meta-secondary">Workholding</div>
+        </div>
+      </button>
+
+      <button id="card-door" class="part-card">
+        <div class="card-tile">
+          <div class="tile-top">
+            <div class="tile-badge"><div class="tile-badge-text">Safe</div></div>
+            <div id="check-door" class="tile-check"></div>
+          </div>
+          <div class="tile-icon-wrap">
+            <DoorClosed id="vn-door-icon" class="icon-green"></DoorClosed>
+          </div>
+        </div>
+        <div class="card-meta">
+          <div class="meta-primary">Safety Door</div>
+          <div class="meta-secondary">Safety</div>
+        </div>
+      </button>
+
+    </div>
+
+    <!-- Row 2 -->
+    <div class="grid-row">
+
+      <button id="card-panel" class="part-card">
+        <div class="card-tile">
+          <div class="tile-top">
+            <div class="tile-badge"><div class="tile-badge-text">CNC</div></div>
+            <div id="check-panel" class="tile-check"></div>
+          </div>
+          <div class="tile-icon-wrap">
+            <Monitor id="vn-panel-icon" class="icon-amber"></Monitor>
+          </div>
+        </div>
+        <div class="card-meta">
+          <div class="meta-primary">Control Panel</div>
+          <div class="meta-secondary">CNC Control</div>
+        </div>
+      </button>
+
+      <button id="card-tool-turret" class="part-card">
+        <div class="card-tile">
+          <div class="tile-top">
+            <div class="tile-badge"><div class="tile-badge-text">Tool</div></div>
+            <div id="check-tool-turret" class="tile-check"></div>
+          </div>
+          <div class="tile-icon-wrap">
+            <RotateCw id="vn-turret-icon" class="icon-violet"></RotateCw>
+          </div>
+        </div>
+        <div class="card-meta">
+          <div class="meta-primary">Tool Turret</div>
+          <div class="meta-secondary">Tooling</div>
+        </div>
+      </button>
+
+      <button id="card-chip-conveyor" class="part-card">
+        <div class="card-tile">
+          <div class="tile-top">
+            <div class="tile-badge"><div class="tile-badge-text">Swarf</div></div>
+            <div id="check-chip-conveyor" class="tile-check"></div>
+          </div>
+          <div class="tile-icon-wrap">
+            <Wind id="vn-conveyor-icon" class="icon-slate"></Wind>
+          </div>
+        </div>
+        <div class="card-meta">
+          <div class="meta-primary">Chip Conveyor</div>
+          <div class="meta-secondary">Swarf Removal</div>
+        </div>
+      </button>
+
+    </div>
+
+  </div>
+</div>

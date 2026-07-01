@@ -1,0 +1,125 @@
+<style>
+  .card-root {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 52;
+    background-color: rgba(9, 9, 11, 0.96);
+    border-color: rgba(39, 39, 42, 0.9);
+    border-width: 0.15;
+    border-radius: 3;
+  }
+
+  .card-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 1.8;
+    padding-bottom: 1.8;
+    padding-left: 2.2;
+    padding-right: 1.6;
+    border-bottom-width: 0.1;
+    border-bottom-color: rgba(39, 39, 42, 0.8);
+  }
+
+  .header-left {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.2;
+  }
+
+  .accent-dot {
+    width: 1;
+    height: 1;
+    border-radius: 0.5;
+    background-color: #00d4ff;
+  }
+
+  .card-title {
+    font-size: 2.4;
+    font-weight: bold;
+    font-family: inter;
+    color: #fafafa;
+  }
+
+  .card-close-btn {
+    width: 4;
+    height: 4;
+    background-color: rgba(255, 255, 255, 0.06);
+    border-radius: 2;
+    border-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .card-close-btn:hover {
+    background-color: rgba(239, 68, 68, 0.85);
+  }
+
+  .card-close-text {
+    font-size: 2.2;
+    font-weight: bold;
+    color: #a1a1aa;
+  }
+
+  .card-close-btn:hover .card-close-text {
+    color: #ffffff;
+  }
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    padding-top: 1.8;
+    padding-bottom: 2;
+    padding-left: 2.2;
+    padding-right: 2.2;
+    gap: 1.2;
+  }
+
+  .card-description {
+    font-size: 1.9;
+    font-family: inter;
+    color: rgba(161, 161, 170, 0.95);
+  }
+
+  .card-tag {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .tag-label {
+    font-size: 1.6;
+    font-weight: 500;
+    font-family: inter;
+    color: #00d4ff;
+    background-color: rgba(0, 212, 255, 0.1);
+    padding-top: 0.4;
+    padding-bottom: 0.4;
+    padding-left: 1;
+    padding-right: 1;
+    border-radius: 1;
+  }
+</style>
+
+<div class="card-root">
+  <div class="card-header">
+    <div class="header-left">
+      <div class="accent-dot"></div>
+      <div id="hotspot-title" class="card-title">Component</div>
+    </div>
+    <button id="hotspot-close" class="card-close-btn">
+      <div class="card-close-text">X</div>
+    </button>
+  </div>
+  <div class="card-body">
+    <div id="hotspot-description" class="card-description">Description goes here.</div>
+    <div class="card-tag">
+      <div id="hotspot-tag" class="tag-label">CNC LATHE</div>
+    </div>
+  </div>
+</div>

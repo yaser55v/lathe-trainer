@@ -1,0 +1,132 @@
+<style>
+  /* ── Outer wrapper — the full toolbar column ── */
+  .toolbar-root {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  /* ── Pill that slides open — hidden by default, shown via JS ── */
+  .toolbar-pill {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6;
+    padding-top: 1.6;
+    padding-bottom: 1.6;
+    padding-left: 1.6;
+    padding-right: 1.6;
+    background-color: rgba(255, 255, 255, 0.96);
+    border-radius: 4.6;
+    margin-bottom: 1.2;
+  }
+
+  /* ── Separator line between icons ── */
+  .toolbar-sep {
+    width: 4.4;
+    height: 0.06;
+    background-color: rgba(0, 0, 0, 0.1);
+    margin-top: 0.4;
+    margin-bottom: 0.4;
+  }
+
+  /* ── Icon button ── */
+  .toolbar-btn {
+    width: 6.4;
+    height: 6.4;
+    border-radius: 10;
+    border-width: 0;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .toolbar-btn:hover {
+    background-color: rgba(0, 0, 0, 0.07);
+  }
+
+  .toolbar-btn-active {
+    width: 6.4;
+    height: 6.4;
+    border-radius: 10;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0.09);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  /* ── Icons ── */
+  .toolbar-icon {
+    width: 3.6;
+    height: 3.6;
+    color: rgba(30, 30, 30, 0.85);
+  }
+
+  .toolbar-icon-dim {
+    width: 3.6;
+    height: 3.6;
+    color: rgba(30, 30, 30, 0.4);
+  }
+
+  /* ── Toggle button at bottom — always visible ── */
+  .toolbar-toggle {
+    width: 7.2;
+    height: 7.2;
+    border-radius: 10;
+    border-width: 0.06;
+    border-color: rgba(255, 255, 255, 0.22);
+    background-color: rgba(22, 22, 26, 0.88);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .toolbar-toggle:hover {
+    background-color: rgba(40, 40, 48, 0.95);
+  }
+
+  .toolbar-toggle-icon {
+    width: 3.6;
+    height: 3.6;
+    color: rgba(255, 255, 255, 0.88);
+  }
+</style>
+
+<div class="toolbar-root">
+
+  <!-- Pill — hidden by default, toggle shows/hides it -->
+  <div id="toolbar-pill" class="toolbar-pill">
+
+    <!-- Pen: open text input -->
+    <button id="toolbar-btn-pen" class="toolbar-btn">
+      <Pencil id="toolbar-icon-pen" class="toolbar-icon"></Pencil>
+    </button>
+
+    <div class="toolbar-sep"></div>
+
+    <!-- Clock: conversation history (future feature) -->
+    <button id="toolbar-btn-clock" class="toolbar-btn">
+      <Clock id="toolbar-icon-clock" class="toolbar-icon-dim"></Clock>
+    </button>
+
+    <div class="toolbar-sep"></div>
+
+    <!-- Settings -->
+    <button id="toolbar-btn-settings" class="toolbar-btn">
+      <Settings id="toolbar-icon-settings" class="toolbar-icon"></Settings>
+    </button>
+
+  </div>
+
+  <!-- Toggle button — always visible below the pill -->
+  <button id="toolbar-toggle" class="toolbar-toggle">
+    <Menu id="toolbar-toggle-icon" class="toolbar-toggle-icon"></Menu>
+  </button>
+
+</div>

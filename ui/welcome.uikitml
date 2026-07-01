@@ -1,0 +1,146 @@
+<style>
+  .welcome-root {
+    display: flex;
+    flex-direction: column;
+    width: 78;
+    padding: 4;
+    gap: 2.4;
+    background-color: rgba(26, 26, 26, 0.96);
+    border-color: rgba(255, 255, 255, 0.14);
+    border-width: 0.08;
+    border-radius: 3;
+  }
+
+  .welcome-eyebrow {
+    font-size: 1.8;
+    font-weight: 600;
+    font-family: inter;
+    color: rgba(76, 255, 145, 0.9);
+    letter-spacing: 0.12;
+  }
+
+  .welcome-title {
+    font-size: 4.2;
+    font-weight: 700;
+    font-family: inter;
+    color: rgba(238, 238, 238, 0.94);
+  }
+
+  .welcome-copy {
+    font-size: 2.2;
+    font-family: inter;
+    line-height: 1.45;
+    color: rgba(218, 218, 218, 0.68);
+  }
+
+  .section-label {
+    margin-top: 1;
+    font-size: 1.9;
+    font-weight: 600;
+    font-family: inter;
+    color: rgba(218, 218, 218, 0.78);
+  }
+
+  .language-grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1.2;
+  }
+
+  .language-btn {
+    min-width: 18;
+    padding-top: 1.8;
+    padding-bottom: 1.8;
+    padding-left: 2.4;
+    padding-right: 2.4;
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.14);
+    border-width: 0.08;
+    border-radius: 1.4;
+    font-size: 2;
+    font-weight: 600;
+    font-family: inter;
+    color: rgba(238, 238, 238, 0.90);
+    cursor: pointer;
+  }
+
+  .language-btn:hover {
+    background-color: rgba(0, 122, 255, 0.9);
+    border-color: rgba(0, 122, 255, 1);
+  }
+
+  .tool-row {
+    display: flex;
+    flex-direction: row;
+    gap: 1.2;
+  }
+
+  .tool-btn {
+    flex: 1;
+    min-width: 18;
+    padding-top: 1.8;
+    padding-bottom: 1.8;
+    padding-left: 2.4;
+    padding-right: 2.4;
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.14);
+    border-width: 0.08;
+    border-radius: 1.4;
+    font-size: 2;
+    font-weight: 600;
+    font-family: inter;
+    color: rgba(238, 238, 238, 0.90);
+    cursor: pointer;
+  }
+
+  .tool-btn:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .continue-btn {
+    margin-top: 0.6;
+    padding-top: 2.2;
+    padding-bottom: 2.2;
+    background-color: rgba(0, 122, 255, 1);
+    border-width: 0;
+    border-radius: 1.8;
+    font-size: 2.4;
+    font-weight: 700;
+    font-family: inter;
+    color: rgba(255, 255, 255, 1);
+    cursor: pointer;
+  }
+
+  .continue-btn:hover {
+    background-color: rgba(10, 132, 255, 1);
+  }
+
+</style>
+
+<div class="welcome-root">
+  <div class="welcome-eyebrow">LATHE TRAINER XR</div>
+  <div class="welcome-title">Choose your language</div>
+  <div class="welcome-copy">
+    Select the language you want the assistant to use during training. If you continue without
+    choosing, English will be used.
+  </div>
+
+  <div class="section-label">Preferred language</div>
+  <div class="language-grid">
+    <button id="welcome-lang-en" class="language-btn">English</button>
+    <button id="welcome-lang-it" class="language-btn">Italiano</button>
+    <button id="welcome-lang-ar" class="language-btn">Arabic</button>
+    <button id="welcome-lang-fr" class="language-btn">Francais</button>
+    <button id="welcome-lang-es" class="language-btn">Espanol</button>
+  </div>
+
+  <div class="section-label">Assistant tools</div>
+  <div class="tool-row">
+    <button id="welcome-write" class="tool-btn">Write message</button>
+    <button id="welcome-image" class="tool-btn">Add image</button>
+    <button id="welcome-mic" class="tool-btn">Voice</button>
+  </div>
+
+  <button id="welcome-continue" class="continue-btn">Continue in English</button>
+</div>

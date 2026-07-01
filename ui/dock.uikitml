@@ -1,0 +1,156 @@
+<style>
+  .dock-outer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5;
+  }
+
+  .dock-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding-top: 1.5;
+    padding-bottom: 1.5;
+    padding-left: 2;
+    padding-right: 2;
+    background-color: rgba(28, 28, 32, 0.90);
+    border-color: rgba(100, 100, 115, 0.30);
+    border-width: 0.1;
+    border-radius: 24;
+    gap: 0.8;
+  }
+
+  .dock-btn {
+    background-color: transparent;
+    border-width: 0;
+    border-radius: 16;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .dock-btn-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8;
+    padding-top: 1.8;
+    padding-bottom: 1.8;
+    padding-left: 2.4;
+    padding-right: 2.4;
+    min-width: 13;
+    border-radius: 16;
+  }
+
+  .dock-btn-inner-active {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8;
+    padding-top: 1.8;
+    padding-bottom: 1.8;
+    padding-left: 2.4;
+    padding-right: 2.4;
+    min-width: 13;
+    border-radius: 16;
+    background-color: rgba(48, 82, 185, 1);
+  }
+
+  .dock-icon {
+    width: 4.5;
+    height: 4.5;
+    color: rgba(210, 210, 220, 0.88);
+  }
+
+  .dock-icon-active {
+    width: 4.5;
+    height: 4.5;
+    color: rgba(255, 255, 255, 1);
+  }
+
+  .dock-text {
+    font-size: 1.9;
+    font-weight: 500;
+    font-family: inter;
+    color: rgba(210, 210, 220, 0.88);
+  }
+
+  .dock-text-active {
+    font-size: 1.9;
+    font-weight: 600;
+    font-family: inter;
+    color: rgba(255, 255, 255, 1);
+  }
+
+  .dock-btn-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .active-indicator {
+    position: absolute;
+    top: -2.5;
+    width: 1.2;
+    height: 1.2;
+    background-color: rgba(130, 195, 255, 1);
+    border-radius: 0.6;
+  }
+
+  .home-indicator {
+    width: 14;
+    height: 0.6;
+    background-color: rgba(200, 200, 210, 0.50);
+    border-radius: 0.3;
+  }
+</style>
+
+<div class="dock-outer">
+  <div class="dock-container">
+
+    <button id="nav-explore" class="dock-btn">
+      <div id="nav-explore-inner" class="dock-btn-inner">
+        <Crosshair id="nav-explore-icon" class="dock-icon"></Crosshair>
+        <div id="nav-explore-text" class="dock-text">Explore</div>
+      </div>
+    </button>
+
+    <button id="nav-panorama" class="dock-btn">
+      <div id="nav-panorama-inner" class="dock-btn-inner">
+        <Globe id="nav-panorama-icon" class="dock-icon"></Globe>
+        <div id="nav-panorama-text" class="dock-text">Panorama</div>
+      </div>
+    </button>
+
+    <div class="dock-btn-wrapper">
+      <div class="active-indicator"></div>
+      <button id="nav-ask-ai" class="dock-btn">
+        <div id="nav-ask-ai-inner" class="dock-btn-inner-active">
+          <MessageSquare id="nav-ask-ai-icon" class="dock-icon-active"></MessageSquare>
+          <div id="nav-ask-ai-text" class="dock-text-active">Ask AI</div>
+        </div>
+      </button>
+    </div>
+
+    <button id="nav-state" class="dock-btn">
+      <div id="nav-state-inner" class="dock-btn-inner">
+        <ChartBar id="nav-state-icon" class="dock-icon"></ChartBar>
+        <div id="nav-state-text" class="dock-text">State</div>
+      </div>
+    </button>
+
+    <button id="nav-menu" class="dock-btn">
+      <div id="nav-menu-inner" class="dock-btn-inner">
+        <Menu id="nav-menu-icon" class="dock-icon"></Menu>
+        <div id="nav-menu-text" class="dock-text">Menu</div>
+      </div>
+    </button>
+
+  </div>
+  <div class="home-indicator"></div>
+</div>

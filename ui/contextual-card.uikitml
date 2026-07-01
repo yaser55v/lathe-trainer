@@ -1,0 +1,87 @@
+<style>
+  .card-container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 60;
+    padding: 0;
+    background-color: rgba(26, 26, 26, 0.96);
+    border-color: rgba(255, 255, 255, 0.14);
+    border-width: 0.08;
+    border-radius: 3;
+  }
+
+  .card-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 1.8;
+    padding-bottom: 1.8;
+    padding-left: 2;
+    padding-right: 2;
+    padding-bottom: 2;
+    margin-bottom: 0.5;
+    border-width: 0;
+    border-color: transparent;
+  }
+
+  .card-title {
+    font-size: 2.6;
+    font-weight: medium;
+    color: rgba(238, 238, 238, 0.94);
+    text-align: left;
+  }
+
+  .card-close-btn {
+    width: 4;
+    height: 4;
+    padding: 0;
+    background-color: rgba(255, 255, 255, 0.06);
+    border-radius: 1.4;
+    border-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .card-close-btn:hover {
+    background-color: rgba(239, 68, 68, 0.85);
+  }
+
+  .card-close-text {
+    font-size: 2.4;
+    font-weight: bold;
+    color: rgba(218, 218, 218, 0.68);
+    text-align: center;
+  }
+
+  .card-close-btn:hover .card-close-text {
+    color: rgba(238, 238, 238, 0.94);
+  }
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    padding: 2;
+  }
+
+  .card-placeholder {
+    font-size: 2;
+    color: rgba(218, 218, 218, 0.68);
+    text-align: left;
+  }
+</style>
+
+<div class="card-container">
+  <div class="card-header">
+    <span id="card-title" class="card-title">Card</span>
+    <button id="card-close" class="card-close-btn">
+      <span class="card-close-text">X</span>
+    </button>
+  </div>
+  <div class="card-body">
+    <span id="card-placeholder" class="card-placeholder">Content coming soon.</span>
+  </div>
+</div>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Digital Twin Assistant — Isolated AI dialogue playground for a generic industrial CNC Turning Center VR training application." />
+  <title>Digital Twin Assistant — CNC Turning Center</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="/ai-assistant/style.css" />
+
+  <!--
+      KEY INJECTION — Vite processes this file as a module entry point (it is
+      at the project root, not in public/). This script tag runs before main.js
+      and uses import.meta.env which Vite replaces at build time with the actual
+      value from VITE_AI_API_KEY in .env. The window global is then readable by
+      the non-bundled main.js loaded below.
+    -->
+  <script type="module">
+    window.__NVIDIA_API_KEY__ = import.meta.env.VITE_AI_API_KEY || "";
+  </script>
+</head>
+
+<body>
+
+  <!-- ============================================================
+         TOP STATUS BAR
+    ============================================================ -->
+  <header class="topbar" role="banner">
+    <div class="topbar__brand">
+      <div class="topbar__logo-ring" aria-hidden="true">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 2" />
+          <circle cx="16" cy="16" r="6" fill="currentColor" opacity="0.3" />
+          <circle cx="16" cy="16" r="2.5" fill="currentColor" />
+        </svg>
+      </div>
+      <div class="topbar__title-group">
+        <span class="topbar__title">Digital Twin Assistant</span>
+        <span class="topbar__subtitle">Generic Industrial CNC Turning Center — VR Prototype Playground</span>
+      </div>
+    </div>
+
+    <div class="topbar__status-group">
+      <div id="action-badge" class="action-badge action-badge--hidden" role="status" aria-live="polite">
+        <span class="action-badge__dot" aria-hidden="true"></span>
+        <span class="action-badge__label" id="action-badge-label">DOOR OPENING</span>
+      </div>
+      <div class="status-pill" id="connection-status" aria-label="Connection status">
+        <span class="status-pill__dot status-pill__dot--idle" id="status-dot" aria-hidden="true"></span>
+        <span class="status-pill__text" id="status-text">Ready</span>
+      </div>
+      <div class="status-pill status-pill--thinking" id="thinking-pill" aria-hidden="true" style="display:none;">
+        <span class="status-pill__dot status-pill__dot--thinking" aria-hidden="true"></span>
+        <span class="status-pill__text">Thinking…</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================
+         MAIN LAYOUT
+    ============================================================ -->
+  <main class="main-layout" role="main">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar" aria-label="Machine reference panel">
+      <div class="sidebar__section">
+        <h2 class="sidebar__heading">Machine Reference</h2>
+        <ul class="machine-spec-list" id="machine-spec-list" aria-label="CNC Turning Center specifications"></ul>
+      </div>
+      <div class="sidebar__section">
+        <h2 class="sidebar__heading">Italian Glossary</h2>
+        <ul class="glossary-list" id="glossary-list" aria-label="Italian/English glossary"></ul>
+      </div>
+
+    </aside>
+
+    <!-- CENTRE: Dialogue Panel -->
+    <section class="dialogue-panel" aria-label="AI conversation panel">
+
+      <div class="conversation-window" id="conversation-window" role="log" aria-live="polite"
+        aria-label="Conversation history"></div>
+
+      <div class="streaming-screen" id="streaming-screen" aria-live="polite" aria-atomic="false" style="display:none;">
+        <div class="streaming-screen__header">
+          <span class="streaming-screen__label">
+            <span class="streaming-dot" aria-hidden="true"></span>
+            STREAMING RESPONSE
+          </span>
+          <span class="streaming-screen__token-count" id="token-count">0 tokens</span>
+        </div>
+        <div class="streaming-screen__content" id="streaming-content"></div>
+      </div>
+
+      <div class="input-zone" role="group" aria-label="Message input area">
+        <div class="input-zone__field-wrapper">
+          <textarea id="user-input" class="input-zone__textarea"
+            placeholder="Ask the assistant… (e.g. 'What is the Torretta?' or 'Open the safety door')" rows="2"
+            aria-label="User message input" maxlength="2000"></textarea>
+          <span class="input-zone__char-count" id="char-count">0 / 2000</span>
+        </div>
+
+        <div class="input-zone__controls">
+          <button id="mic-btn" class="btn btn--mic" type="button" aria-label="Start voice input" aria-pressed="false"
+            title="Activate microphone for voice input">
+            <svg class="btn__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true">
+              <rect x="9" y="2" width="6" height="11" rx="3" stroke="currentColor" stroke-width="1.8" />
+              <path d="M5 10C5 14.4183 8.13401 18 12 18C15.866 18 19 14.4183 19 10" stroke="currentColor"
+                stroke-width="1.8" stroke-linecap="round" />
+              <line x1="12" y1="18" x2="12" y2="22" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+              <line x1="9" y1="22" x2="15" y2="22" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+            </svg>
+            <span class="btn__label">Voice</span>
+          </button>
+
+          <button id="tts-toggle-btn" class="btn btn--secondary" type="button" aria-label="Toggle voice feedback"
+            aria-pressed="true" title="Toggle text-to-speech output">
+            <svg class="btn__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" stroke="currentColor" stroke-width="1.8"
+                fill="none" />
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14" stroke="currentColor" stroke-width="1.8"
+                stroke-linecap="round" />
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+            </svg>
+            <span class="btn__label">Voice Out</span>
+          </button>
+
+          <div class="input-zone__spacer"></div>
+
+          <button id="clear-btn" class="btn btn--ghost" type="button" aria-label="Clear conversation history"
+            title="Clear all conversation history">
+            <svg class="btn__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true">
+              <polyline points="3 6 5 6 21 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+              <path d="M19 6l-1 14H6L5 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round" />
+              <path d="M10 11v6M14 11v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+              <path d="M9 6V4h6v2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                stroke-linejoin="round" />
+            </svg>
+            <span class="btn__label">Clear</span>
+          </button>
+
+          <button id="stop-btn" class="btn btn--danger" type="button" aria-label="Stop current AI response"
+            title="Abort the current streaming response" style="display:none;">
+            <svg class="btn__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true">
+              <rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="1.8"
+                fill="currentColor" fill-opacity="0.2" />
+            </svg>
+            <span class="btn__label">Stop</span>
+          </button>
+
+          <button id="send-btn" class="btn btn--primary" type="button" aria-label="Send message to AI assistant"
+            title="Submit your query (Ctrl+Enter)">
+            <svg class="btn__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true">
+              <line x1="22" y1="2" x2="11" y2="13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+              <polygon points="22 2 15 22 11 13 2 9 22 2" stroke="currentColor" stroke-width="1.8"
+                stroke-linejoin="round" fill="none" />
+            </svg>
+            <span class="btn__label">Send</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT SIDEBAR -->
+    <aside class="sidebar sidebar--right" aria-label="Diagnostics and reasoning panel">
+
+      <div class="sidebar__section">
+        <h2 class="sidebar__heading">Action Intercepts</h2>
+        <div class="intercept-log" id="intercept-log" aria-label="Intercepted action tokens" role="log">
+          <p class="reasoning-log__empty">No actions intercepted yet.</p>
+        </div>
+      </div>
+
+    </aside>
+  </main>
+
+  <!-- Mic listening overlay -->
+  <div id="mic-overlay" class="mic-overlay" aria-hidden="true" style="display:none;">
+    <div class="mic-overlay__ripple"></div>
+    <div class="mic-overlay__ripple mic-overlay__ripple--delay1"></div>
+    <div class="mic-overlay__ripple mic-overlay__ripple--delay2"></div>
+    <div class="mic-overlay__icon">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="9" y="2" width="6" height="11" rx="3" fill="currentColor" opacity="0.9" />
+        <path d="M5 10C5 14.4183 8.13401 18 12 18C15.866 18 19 14.4183 19 10" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" />
+        <line x1="12" y1="18" x2="12" y2="22" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        <line x1="9" y1="22" x2="15" y2="22" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      </svg>
+    </div>
+    <p class="mic-overlay__label">Listening…</p>
+  </div>
+
+  <!--
+      main.js is a plain module — it reads window.__NVIDIA_API_KEY__
+      set by the inline module script above.
+      Both scripts are type="module" so they execute in declaration order.
+    -->
+  <script type="module" src="/ai-assistant/main.js"></script>
+</body>
+
+</html>

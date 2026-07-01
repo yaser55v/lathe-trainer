@@ -1,0 +1,39 @@
+<style>
+  .toggle-root {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .toggle-btn {
+    width: 9;
+    height: 9;
+    border-radius: 10;
+    border-width: 0.08;
+    border-color: rgba(0, 0, 0, 0.25);
+    background-color: rgba(255, 255, 255, 0.97);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .toggle-btn:hover {
+    background-color: rgba(101, 101, 101, 0.91);
+    border-color: rgba(255, 255, 255, 0.14);
+  }
+
+  .toggle-icon {
+    width: 4.8;
+    height: 4.8;
+    color: rgba(25, 25, 25, 0.96);
+    pointer-events: none;
+  }
+
+</style>
+
+<div class="toggle-root">
+  <button id="toolbar-toggle" class="toggle-btn">
+    <Menu id="toolbar-toggle-icon" class="toggle-icon"></Menu>
+  </button>
+</div>

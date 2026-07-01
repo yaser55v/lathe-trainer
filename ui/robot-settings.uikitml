@@ -1,0 +1,186 @@
+<style>
+  .settings-root {
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(26, 26, 26, 0.96);
+    border-color: rgba(255, 255, 255, 0.14);
+    border-width: 0.08;
+    border-radius: 3;
+    padding-top: 1;
+    padding-bottom: 1;
+    width: 48;
+  }
+
+  .settings-title {
+    font-size: 2;
+    font-weight: 600;
+    font-family: inter;
+    color: rgba(218, 218, 218, 0.68);
+    padding-top: 1.6;
+    padding-bottom: 1.2;
+    padding-left: 3.2;
+    padding-right: 3.2;
+    letter-spacing: 0.15;
+  }
+
+  .settings-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 2;
+    padding-bottom: 2;
+    padding-left: 3.2;
+    padding-right: 3.2;
+    gap: 2;
+  }
+
+  .settings-row:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+  }
+
+  .settings-sep {
+    height: 0.06;
+    background-color: rgba(255, 255, 255, 0.10);
+    margin-left: 3.2;
+    margin-right: 3.2;
+  }
+
+  .settings-text-col {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 0.4;
+  }
+
+  .settings-primary {
+    font-size: 2.4;
+    font-weight: 500;
+    font-family: inter;
+    color: rgba(238, 238, 238, 0.94);
+  }
+
+  .settings-secondary {
+    font-size: 1.9;
+    font-family: inter;
+    color: rgba(218, 218, 218, 0.68);
+  }
+
+  /* Toggle track */
+  .toggle-track {
+    width: 8;
+    height: 4.4;
+    border-radius: 10;
+    background-color: rgba(255, 255, 255, 0.18);
+    display: flex;
+    align-items: center;
+    padding-left: 0.4;
+    padding-right: 0.4;
+    cursor: pointer;
+    flex-shrink: 0;
+    border-width: 0;
+  }
+
+  .toggle-track-on {
+    width: 8;
+    height: 4.4;
+    border-radius: 10;
+    background-color: rgba(0, 122, 255, 1);
+    display: flex;
+    align-items: center;
+    padding-left: 0.4;
+    padding-right: 0.4;
+    cursor: pointer;
+    flex-shrink: 0;
+    border-width: 0;
+    justify-content: flex-end;
+  }
+
+  .toggle-thumb {
+    width: 3.4;
+    height: 3.4;
+    border-radius: 10;
+    background-color: rgba(238, 238, 238, 0.94);
+  }
+
+  /* Talk mode selector buttons */
+  .talk-mode-row {
+    display: flex;
+    gap: 1.2;
+    flex-direction: row;
+  }
+
+  .talk-mode-btn {
+    flex: 1;
+    padding-top: 1.8;
+    padding-bottom: 1.8;
+    background-color: rgba(42, 43, 48, 0.96);
+    border-color: rgba(255, 255, 255, 0.10);
+    border-width: 0.08;
+    border-radius: 1.4;
+    font-size: 2;
+    font-weight: 500;
+    font-family: inter;
+    color: rgba(218, 218, 218, 0.78);
+    cursor: pointer;
+  }
+
+  .talk-mode-btn-active {
+    flex: 1;
+    padding-top: 1.8;
+    padding-bottom: 1.8;
+    background-color: rgba(0, 122, 255, 1);
+    border-radius: 1.4;
+    font-size: 2;
+    font-weight: 600;
+    font-family: inter;
+    color: rgba(238, 238, 238, 0.94);
+    cursor: pointer;
+    border-width: 0;
+  }
+</style>
+
+<div class="settings-root">
+
+  <div class="settings-title">Settings</div>
+
+  <div class="settings-row">
+    <div class="settings-text-col">
+      <div class="settings-primary">Voice Response</div>
+      <div class="settings-secondary">Robot speaks answers aloud</div>
+    </div>
+    <button id="setting-voice" class="toggle-track-on">
+      <div class="toggle-thumb"></div>
+    </button>
+  </div>
+
+  <div class="settings-sep"></div>
+
+  <div class="settings-row">
+    <div class="settings-text-col">
+      <div class="settings-primary">Auto-Listen</div>
+      <div class="settings-secondary">Activate mic after each response</div>
+    </div>
+    <button id="setting-autolisten" class="toggle-track">
+      <div class="toggle-thumb"></div>
+    </button>
+  </div>
+
+  <div class="settings-sep"></div>
+
+  <div class="settings-row">
+    <div class="settings-text-col">
+      <div class="settings-primary">Talk Mode</div>
+      <div class="settings-secondary">How to activate voice input</div>
+    </div>
+  </div>
+
+  <div style="padding-left: 3.2; padding-right: 3.2; padding-bottom: 1.5;">
+    <div class="talk-mode-row">
+      <button id="talk-mode-hold" class="talk-mode-btn-active">Hold</button>
+      <button id="talk-mode-toggle" class="talk-mode-btn">Toggle</button>
+      <button id="talk-mode-always" class="talk-mode-btn">Always On</button>
+    </div>
+  </div>
+
+</div>

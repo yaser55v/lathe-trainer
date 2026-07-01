@@ -1,0 +1,7 @@
+onlyBuiltDependencies:
+  - '@meta-quest/hzdb'
+  - esbuild
+  - onnxruntime-node
+  - protobufjs
+  - sharp
+  - webgpu

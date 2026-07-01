@@ -1,0 +1,134 @@
+# Digital Twin Assistant — Implementation Walkthrough
+
+## What Was Built
+
+A fully self-contained AI conversational interface at **`public/ai-assistant/`**, completely isolated from the main WebXR viewport. Once stable, the underlying logic can be ported directly into the 3D immersive view.
+
+---
+
+## File Structure
+
+```
+lathe-trainer/
+├── public/
+│   └── ai-assistant/
+│       ├── index.html   ← HTML shell + layout
+│       ├── style.css    ← Full design system (Vanilla CSS, design tokens)
+│       └── main.js      ← All application logic (no npm deps)
+├── src/
+│   ├── vite-env.d.ts    ← Added __NVIDIA_API_KEY__ global type declaration
+│   └── ai-assistant-loader.ts  ← Stub (key injection done by plugin)
+├── vite.config.ts       ← Added nvidiaKeyPlugin (API key injection middleware)
+└── CNC_Knowledge.md     ← Auto-loaded at runtime by main.js
+```
+
+---
+
+## Opening the Playground
+
+The dev server is running. Navigate to:
+
+```
+https://localhost:8081/ai-assistant/
+```
+
+> [!IMPORTANT]
+> Use **HTTPS** (not HTTP) — the dev server uses mkcert TLS. `SpeechRecognition` and `SpeechSynthesis` APIs require a secure context.
+
+---
+
+## Architecture — Key Subsystems
+
+### 1. API Key Injection (`nvidiaKeyPlugin`)
+`public/` files are served as static assets — Vite's module graph never processes them, so `import.meta.env` is unavailable inside them.
+
+**Solution:** A custom Vite plugin in `vite.config.ts` intercepts `GET /ai-assistant/env.js` and dynamically serves:
+```js
+window.__NVIDIA_API_KEY__ = "nvapi-...";
+```
+This is loaded as a plain `<script>` *before* `main.js`, so the global is synchronously available. In `main.js`, `resolveApiKey()` reads it from `window.__NVIDIA_API_KEY__`.
+
+### 2. NVIDIA NIM Streaming Client (`NvidiaStreamClient`)
+No SDK, no npm packages. Uses the browser-native `fetch` API with `ReadableStream`:
+
+```js
+const response = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
+  method: "POST",
+  headers: { "Authorization": `Bearer ${apiKey}` },
+  body: JSON.stringify({ model, messages, stream: true, ...params }),
+});
+
+const reader  = response.body.getReader();
+const decoder = new TextDecoder("utf-8", { stream: true });
+
+// Parses SSE lines: "data: {...}" → delta.content / delta.reasoning_content
+```
+
+**Reasoning content** (`delta.reasoning_content`) is routed **only** to the console and the right sidebar diagnostics panel — it is never rendered in the main conversation view.
+
+### 3. Action Token Interceptor (`ActionInterceptor`)
+Strips `[ACTION:TOKEN]` tags from the visible stream **before** they reach the UI, then fires visual events.
+
+| Token | Triggered By Trainee |
+|---|---|
+| `[ACTION:OPEN_DOOR]` | "Open the safety door" |
+| `[ACTION:CLOSE_DOOR]` | "Close the door" |
+| `[ACTION:ESTOP_ON]` | Activating emergency stop |
+| `[ACTION:SPINDLE_ON/OFF]` | Spindle commands |
+| `[ACTION:HOME_AXES]` | Azzeramento / homing |
+
+When intercepted, the **top-bar action badge** lights up with an amber pulse animation for 6 seconds, and the event is logged in the right sidebar intercept log.
+
+### 4. Dual Input
+- **Keyboard:** Textarea + Send button. `Ctrl+Enter` also submits.
+- **Voice:** Web Speech API (`SpeechRecognition`). Microphone button activates a fullscreen ripple overlay. Speech is transcribed locally and injected into the textarea — the trainee reviews before sending.
+
+### 5. Dual Output
+- **Visual stream:** Tokens render in real-time into the streaming screen panel as they arrive over SSE. Italian terms (`Torretta`, `Mandrini`, `Pezzo grezzo`, etc.) are automatically highlighted in amber.
+- **TTS:** Once the stream closes, the full clean response is fed to `SpeechSynthesisUtterance`. Truncated to 800 chars to prevent excessively long playback. Togglable via the Voice Out button.
+
+### 6. CNC Knowledge Injection
+`CNC_Knowledge.md` is fetched at runtime from `/CNC_Knowledge.md` (served from `public/` root by Vite). Its full content is embedded into the system prompt sent on every request — no fine-tuning required.
+
+---
+
+## UI Layout
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  TOPBAR: Brand | [ACTION BADGE]  [Status Pill] [Thinking]   │
+├──────────────┬──────────────────────────┬───────────────────┤
+│  LEFT PANEL  │   CENTRE DIALOGUE        │   RIGHT PANEL     │
+│              │                          │                   │
+│ Machine Specs│  Conversation Window     │ Reasoning Log     │
+│ IT Glossary  │  (message bubbles)       │ (dev diagnostics) │
+│ Session Log  │                          │ Intercept Log     │
+│              │  Streaming Screen        │ API Telemetry     │
+│              │  (live token display)    │                   │
+│              ├──────────────────────────┤                   │
+│              │  INPUT ZONE              │                   │
+│              │  [🎤 Voice][🔊 TTS Out]  │                   │
+│              │  [Clear]    [Stop][Send] │                   │
+└──────────────┴──────────────────────────┴───────────────────┘
+```
+
+---
+
+## System Prompt Rules (IP Safety)
+- **Zero brand names** — always "generic high-precision industrial CNC Turning Center"
+- **Bilingual responses** — Italian terms blended naturally with English explanations
+- **Safety gate** — always confirms door/E-Stop state before movement commands
+- **Practical pedagogy** — encourages hands-on trial, not passive theory
+
+---
+
+## Porting to the 3D WebXR View
+
+When ready to integrate:
+
+1. **`NvidiaStreamClient`** — copy class as-is; it has zero DOM dependencies.
+2. **`ConversationManager`** — copy as-is; pure data structure.
+3. **`ActionInterceptor`** — copy as-is; replace the UI callback with a Three.js scene event dispatcher.
+4. **`VoiceInputController` / `VoiceSynthController`** — copy as-is; browser APIs work inside WebXR sessions.
+5. **System prompt** — load `CNC_Knowledge.md` the same way, inject into `ConversationManager`.
+6. Replace the HTML/CSS rendering layer with your 3D panel renderer (UIKit/Three.js).

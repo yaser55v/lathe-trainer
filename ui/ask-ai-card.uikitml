@@ -1,0 +1,197 @@
+<style>
+  .ai-card {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 60;
+    background-color: rgba(26, 26, 26, 0.96);
+    border-color: rgba(255, 255, 255, 0.14);
+    border-width: 0.08;
+    border-radius: 3;
+  }
+
+  .ai-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 2.4;
+    padding-bottom: 2.4;
+    padding-left: 3;
+    padding-right: 3;
+    border-top-left-radius: 3;
+    border-top-right-radius: 3;
+    border-width: 0 0 0.08 0;
+    border-color: rgba(255, 255, 255, 0.10) transparent transparent transparent;
+    background-color: rgba(42, 43, 48, 0.55);
+  }
+
+  .ai-header-left {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.4;
+  }
+
+  .ai-dot {
+    width: 1.4;
+    height: 1.4;
+    border-radius: 10;
+    background-color: rgba(0, 122, 255, 1);
+  }
+
+  .ai-title {
+    font-size: 2.8;
+    font-weight: 600;
+    font-family: inter;
+    color: rgba(238, 238, 238, 0.94);
+  }
+
+  .ai-subtitle {
+    font-size: 1.8;
+    font-family: inter;
+    color: rgba(218, 218, 218, 0.68);
+    margin-top: 0.3;
+  }
+
+  .ai-close-btn {
+    width: 4.4;
+    height: 4.4;
+    padding: 0;
+    background-color: rgba(255, 255, 255, 0.08);
+    border-radius: 1.4;
+    border-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .ai-close-btn:hover {
+    background-color: rgba(255, 80, 80, 0.90);
+  }
+
+  .ai-close-icon {
+    width: 2.4;
+    height: 2.4;
+    color: rgba(218, 218, 218, 0.78);
+  }
+
+  .ai-close-btn:hover .ai-close-icon {
+    color: rgba(238, 238, 238, 0.94);
+  }
+
+  .ai-body {
+    display: flex;
+    flex-direction: column;
+    padding-top: 3;
+    padding-right: 3;
+    padding-bottom: 3;
+    padding-left: 3;
+    gap: 2.4;
+  }
+
+  .ai-bubble {
+    display: flex;
+    flex-direction: column;
+    padding-top: 2.4;
+    padding-bottom: 2.4;
+    padding-left: 2.4;
+    padding-right: 2.4;
+    background-color: rgba(42, 43, 48, 0.96);
+    border-color: rgba(255, 255, 255, 0.10);
+    border-width: 0.08;
+    border-radius: 1.4;
+  }
+
+  .ai-bubble-label {
+    font-size: 1.6;
+    font-family: inter;
+    font-weight: 600;
+    color: rgba(238, 238, 238, 0.94);
+    margin-bottom: 1;
+  }
+
+  .ai-bubble-text {
+    font-size: 2.2;
+    font-family: inter;
+    line-height: 1.5;
+    color: rgba(238, 238, 238, 0.90);
+  }
+
+  .ai-input-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding-top: 2;
+    padding-bottom: 2;
+    padding-left: 2.4;
+    padding-right: 2;
+    background-color: rgba(42, 43, 48, 0.96);
+    border-color: rgba(255, 255, 255, 0.10);
+    border-width: 0.08;
+    border-radius: 1.4;
+    gap: 1.4;
+  }
+
+  .ai-input-placeholder {
+    font-size: 2.2;
+    font-family: inter;
+    color: rgba(218, 218, 218, 0.50);
+    flex-grow: 1;
+  }
+
+  .ai-send-btn {
+    padding-top: 1.4;
+    padding-bottom: 1.4;
+    padding-left: 2.8;
+    padding-right: 2.8;
+    background-color: rgba(0, 122, 255, 0.95);
+    border-width: 0;
+    border-radius: 1.4;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-send-btn:hover {
+    background-color: rgba(0, 122, 255, 1);
+  }
+
+  .ai-send-text {
+    font-size: 2;
+    font-family: inter;
+    font-weight: 600;
+    color: rgba(238, 238, 238, 0.94);
+  }
+
+</style>
+
+<div class="ai-card">
+  <div class="ai-header">
+    <div class="ai-header-left">
+      <div class="ai-dot"></div>
+      <div style="display: flex; flex-direction: column;">
+        <div class="ai-title">Ask AI</div>
+        <div class="ai-subtitle">Lathe Machine Assistant</div>
+      </div>
+    </div>
+    <button id="ai-card-close" class="ai-close-btn">
+      <X class="ai-close-icon"></X>
+    </button>
+  </div>
+  <div class="ai-body">
+    <div class="ai-bubble">
+      <div class="ai-bubble-label">AI</div>
+      <div id="ai-response-text" class="ai-bubble-text">Hello! I can help you understand this lathe
+        machine. Ask me about its parts, operation, or safety procedures.</div>
+    </div>
+    <div class="ai-input-row">
+      <div class="ai-input-placeholder">Ask a question…</div>
+      <button id="ai-send-btn" class="ai-send-btn">
+        <div class="ai-send-text">Ask</div>
+      </button>
+    </div>
+  </div>
+</div>
