@@ -94,6 +94,8 @@ pnpm preview
 
 ## AI Architecture
 
+![IWSDK AI Pipeline](./iwsdk_ai_pipeline_v2.png)
+
 The assistant does not rely only on raw prompt text. Before each request, deterministic TypeScript skills compute structured facts:
 
 - Spatial facts: user side, nearest component, distance, visible components
