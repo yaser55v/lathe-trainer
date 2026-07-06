@@ -268,7 +268,7 @@ The deterministic industrial layer developed in Lathe Trainer is model-agnostic 
 
 # AI Pipeline
 
-(image)
+![AI Pipeline](pipeline.jpg)
 
 Explain every stage.
 
@@ -448,3 +448,11 @@ The real innovation lies in how deterministic engineering, spatial computing, in
 Artificial Intelligence should not replace industrial knowledge.
 
 It should make industrial knowledge available exactly when and where it is needed.
+
+---
+
+# Resources
+
+- **CNC Machine Model** — [Universal Turning Center (CGTrader)](https://www.cgtrader.com/free-3d-models/aircraft/commercial-aircraft/cnc-lathe-universal-turning-center-0751c817-2899-4308-92d0-5e49db7ffd36)
+- **Robot Model** — [Sketchfab](https://skfb.ly/oJEqx)
+- **AI Model** — [NVIDIA Nemotron 3 Nano Omni 30B](https://build.nvidia.com/nvidia/nemotron-3-nano-omni-30b-a3b-reasoning)
