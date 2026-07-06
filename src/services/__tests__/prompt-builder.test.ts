@@ -238,7 +238,7 @@ describe("PromptBuilder — section structure", () => {
     });
     const out = pb.build();
     // canOpenDoor is allowed in this fixture, so it must NOT appear as blocked.
-    expect(out).not.toContain("OPEN_DOOR blocked");
+    expect(out).not.toContain("DOOR_BLOCK:OPEN");
     // canCloseDoor is blocked with a non-idempotent reason — must surface.
     // (The fixture uses "Door is already CLOSED" which the builder explicitly
     // suppresses as idempotent, so we instead use a custom reason to prove
@@ -257,7 +257,7 @@ describe("PromptBuilder — section structure", () => {
       },
     });
     const out2 = pb2.build();
-    expect(out2).toContain("OPEN_DOOR blocked");
+    expect(out2).toContain("DOOR_BLOCK:OPEN");
     expect(out2).toContain("Cannot open door while spindle is running");
   });
 

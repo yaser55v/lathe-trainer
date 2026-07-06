@@ -277,7 +277,24 @@ export class AssistantSystem extends createSystem({
   }
 
   private handleLocalXrCommand(text: string): boolean {
-    const normalized = text.toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, " ");
+    const normalized = text.toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, " ").trim();
+
+    // ── Stop command — intercept before sending to AI ──────────────────────
+    // Catches typed stop words in any language immediately, without an API call.
+    const STOP_WORDS = [
+      "stop", "quiet", "silence", "enough", "halt", "cancel", "shut up", "be quiet",
+      "fermati", "basta", "silenzio", "smettila", "taci",
+      "arrêtez", "arrêtez vous", "tais toi", "suffit",
+      "para", "cállate", "silencio",
+      "قف", "اسكت", "صمت", "كفى",
+      "остановись", "замолчи", "стоп",
+      "停", "止まれ", "静かに",
+      "रुको", "बंद करो",
+    ];
+    if (STOP_WORDS.some(w => normalized === w || normalized.startsWith(w + " "))) {
+      this.service?.stop();
+      return true;
+    }
 
     const wantsToolPanel =
       normalized.includes("open tool panel") ||

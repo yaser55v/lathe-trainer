@@ -25,13 +25,102 @@ import { SupportedLang } from "../skills/learner-memory-skill";
 const NVIDIA_ENDPOINT = "/v1/chat/completions";
 const MODEL_ID = "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning";
 
-const MODEL_PARAMS = {
+const BASE_MODEL_PARAMS = {
   temperature: 1,
   top_p: 0.95,
   max_tokens: 8192,
-  reasoning_budget: 8192,
-  chat_template_kwargs: { enable_thinking: true },
 } as const;
+
+/**
+ * Query complexity tiers — controls how much reasoning budget the model gets.
+ *
+ * FAST  — pure greetings and one-word social reactions only (≤ 20 chars)
+ *          thinking disabled → ~1s response, very short reply expected
+ * NORMAL — component questions, highlights, explain queries, door actions
+ *          budget 3072 → fast but with enough room for a proper explanation
+ * DEEP  — maintenance diagnosis, sales ROI, safety analysis, multi-step procedures
+ *          budget 8192 → full reasoning power
+ */
+type QueryTier = "FAST" | "NORMAL" | "DEEP";
+
+const DEEP_KEYWORDS = [
+  // Maintenance & troubleshooting
+  "vibrat", "noise", "loud", "broken", "fault", "error", "alarm", "not working",
+  "won't start", "overheating", "leak", "smoke",
+  "diagnos", "maintain", "maintenance", "repair", "fix", "replace", "worn",
+  "symptom", "problem", "issue", "failure", "damage",
+  // Sales & ROI
+  "price", "cost", "budget", "roi", "return", "invest", "expensive", "cheap",
+  "afford", "worth", "quote", "purchase", "buy", "order",
+  // Complex procedures
+  "program", "g-code", "g code", "cnc program", "post processor", "toolpath",
+  "offset", "compensation", "calibrat", "setup procedure", "step by step",
+  "how do i", "how to", "procedure", "process",
+];
+
+// FAST only matches pure greetings/acks with no other content
+const FAST_PATTERNS = [
+  /^(hello|hi+|hey+)[\s!.]*$/i,
+  /^(good\s+(morning|afternoon|evening))[\s!.]*$/i,
+  /^(ciao|salut|hola|bonjour|guten\s+morgen|salam|مرحبا|صباح\s*الخير)[\s!.]*$/i,
+  /^(thanks|thank\s+you|grazie|merci|shukran)[\s!.]*$/i,
+  /^(ok|okay|got\s+it|understood|alright|sure)[\s!.]*$/i,
+  /^(wow|really|no\s+way|great|cool|nice|awesome|perfect)[\s!.]*$/i,
+  /^(bye|goodbye|arrivederci|ciao\s+ciao|au\s+revoir)[\s!.]*$/i,
+];
+
+function getModelParams(text: string | null): {
+  temperature: number;
+  top_p: number;
+  max_tokens: number;
+  reasoning_budget?: number;
+  chat_template_kwargs?: { enable_thinking: boolean };
+} {
+  const tier = classifyQuery(text);
+
+  if (tier === "FAST") {
+    return {
+      ...BASE_MODEL_PARAMS,
+      chat_template_kwargs: { enable_thinking: false },
+    };
+  }
+
+  if (tier === "NORMAL") {
+    return {
+      ...BASE_MODEL_PARAMS,
+      reasoning_budget: 3072,
+      chat_template_kwargs: { enable_thinking: true },
+    };
+  }
+
+  // DEEP
+  return {
+    ...BASE_MODEL_PARAMS,
+    reasoning_budget: 8192,
+    chat_template_kwargs: { enable_thinking: true },
+  };
+}
+
+function classifyQuery(text: string | null): QueryTier {
+  // Audio/image with no text — use NORMAL (enough for a component explanation)
+  if (!text) return "NORMAL";
+
+  const trimmed = text.trim();
+
+  // FAST: only pure greetings/acks — nothing that needs a substantive reply
+  if (FAST_PATTERNS.some(re => re.test(trimmed))) {
+    return "FAST";
+  }
+
+  // DEEP: maintenance, sales, complex procedures
+  const lower = trimmed.toLowerCase();
+  if (DEEP_KEYWORDS.some(k => lower.includes(k))) {
+    return "DEEP";
+  }
+
+  // Everything else: component questions, highlights, door/action queries
+  return "NORMAL";
+}
 
 /**
  * Matches [ACTION:TOKEN_NAME] tokens in text.
@@ -234,9 +323,11 @@ export class AssistantService {
 
     console.log(`[AssistantService] Sending image — size: ${imageBlob.size}B`);
 
-    const userContent = text?.trim() 
-      ? `(User provided an image with the following message: "${text.trim()}". Analyze the image to answer the user.)` 
-      : `(User provided an image. Analyze the image to troubleshoot the machine issue or answer the user's implied question.)`;
+    // CRITICAL: Pass the raw user text directly without wrapping it in guidance.
+    // The system prompt already handles image context ("a screenshot is automatically captured and attached as an image").
+    // Wrapping the text suppresses intent classification (HIGHLIGHT vs EXPLAIN) and produces shallow responses.
+    // If no text is provided, default to "what is this?" which triggers HIGHLIGHT intent.
+    const userContent = text?.trim() || "what is this?";
 
     this.history.push({
       role: "user",
@@ -244,7 +335,7 @@ export class AssistantService {
     });
     this.pruneHistory();
 
-    await this.processRequest(text?.trim() || null, imageBase64, null);
+    await this.processRequest(userContent, imageBase64, null);
   }
 
   private async processRequest(text: string | null, imageBase64: string | null, audioBase64: string | null, audioMime = "audio/wav"): Promise<void> {
@@ -267,7 +358,7 @@ export class AssistantService {
           model: MODEL_ID,
           messages,
           stream: true,
-          ...MODEL_PARAMS,
+          ...getModelParams(text),
         }),
       });
 
@@ -460,6 +551,12 @@ export class AssistantService {
 
           firedActions.add(actionName);
           this.emit({ type: "action", name: actionName });
+
+          // STOP action — halt everything immediately, no speech, no history entry
+          if (actionName === "STOP") {
+            this.stop();
+            return;
+          }
         }
       }
 
@@ -775,6 +872,7 @@ class NativeTTSController {
   private onDone: () => void;
   private onIdle: () => void;
   private utterance: SpeechSynthesisUtterance | null = null;
+  private stopped = false;
 
   constructor(onDone: () => void, onIdle: () => void) {
     this.onDone = onDone;
@@ -792,6 +890,7 @@ class NativeTTSController {
     }
 
     this.stop();
+    this.stopped = false;
 
     // Right-to-left languages benefit from a slightly slower rate
     const rate = LANG_RATE[lang] ?? 1.0;
@@ -809,6 +908,9 @@ class NativeTTSController {
     }
 
     const speakSentences = (voice: SpeechSynthesisVoice | null, index: number) => {
+      // Bail out immediately if stop() was called — do not advance to next sentence
+      if (this.stopped) return;
+
       if (index >= sentences.length) {
         this.utterance = null;
         onDone?.(); this.onDone(); this.onIdle();
@@ -830,9 +932,13 @@ class NativeTTSController {
         };
       }
 
-      utt.onend = () => speakSentences(voice, index + 1);
+      utt.onend = () => {
+        if (this.stopped) return;
+        speakSentences(voice, index + 1);
+      };
       utt.onerror = () => {
-        // Skip errored sentence and continue with the rest
+        // Only continue to next sentence on genuine errors, not on cancel() from stop()
+        if (this.stopped) return;
         speakSentences(voice, index + 1);
       };
 
@@ -857,6 +963,8 @@ class NativeTTSController {
   }
 
   stop(): void {
+    // Set flag BEFORE cancel() so onerror/onend callbacks see it and don't advance to next sentence
+    this.stopped = true;
     if ("speechSynthesis" in window) window.speechSynthesis.cancel();
     this.utterance = null;
   }
