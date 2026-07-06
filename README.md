@@ -2,6 +2,38 @@
 
 > Democratizing Industrial AI through Mixed Reality, Deterministic Intelligence, and Real-Time Knowledge Transfer.
 
+**Live Demo:** [lathe-trainer.netlify.app](https://lathe-trainer.netlify.app/)
+
+---
+
+# Tech Stack
+
+## Runtime & Rendering
+- **Three.js** — 3D scene rendering and spatial environment
+- **TypeScript** — fully typed codebase from AI pipeline to ECS systems
+- **WebXR** — immersive XR session management and headset integration
+- **Vite** — development server and production build
+
+## XR Platform
+- **Meta Quest 3** — primary target headset (WebXR-compatible)
+- **IWSDK (Immersive Web SDK)** — ECS-based XR application framework built on Three.js
+- **UIKitML / uikitml** — declarative XML-based XR UI panel system
+
+## 3D & Assets
+- **Blender** — 3D model authoring and rigging
+- **GLTF / GLB** — runtime 3D asset format
+- **HDR environment maps** — physically-based lighting
+
+## AI & Backend
+- **NVIDIA Nemotron 3 Nano Omni 30B** — multimodal foundation model (text, vision, audio)
+- **NVIDIA NIM API** — inference endpoint
+- **Web Speech Synthesis API** — native TTS for XR audio output
+- **MediaRecorder API** — voice input capture
+
+## Testing & Quality
+- **Vitest** — unit test runner (86 tests)
+- **jsdom** — DOM environment for test isolation
+
 ---
 
 # Executive Summary
