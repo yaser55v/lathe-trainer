@@ -302,7 +302,17 @@ The deterministic industrial layer developed in Lathe Trainer is model-agnostic 
 
 ![AI Pipeline](pipeline.jpg)
 
-Explain every stage.
+The AI pipeline represents the complete flow from user input to machine action:
+
+1. **User Input** — voice, text, or image query from the XR environment
+2. **Skills Layer (Pre-LLM)** — deterministic TypeScript skills compute spatial context, safety constraints, machine state, and learner profile before the LLM sees anything
+3. **Prompt Builder** — assembles a structured system prompt containing authoritative facts (not requests for reasoning)
+4. **Foundation Model** — NVIDIA Nemotron Omni generates a natural language explanation based on deterministic facts
+5. **Action Parser** — extracts action tokens (highlight component, open door, etc.) from the response
+6. **Presentation Layer** — renders visual highlights in 3D space and speaks the response via native TTS
+7. **Machine State Update** — action execution updates the deterministic state, closing the loop
+
+This architecture ensures that every industrial fact the AI references was computed deterministically rather than guessed probabilistically.
 
 ---
 
@@ -310,53 +320,65 @@ Explain every stage.
 
 ## Spatial Skill
 
-Explains what the user can actually see.
+Computes where the operator is standing, which side of the machine they face, what components are visible from their position, and their distance from interactive elements.
+
+The AI never guesses spatial relationships — the Spatial Skill calculates them from 3D coordinates before every response.
 
 ---
 
 ## Safety Skill
 
-Enforces industrial safety.
+Validates whether requested actions are safe based on current machine state, operator position, and ISO 13850 safety standards.
 
-Never delegated to the LLM.
+Safety decisions are never delegated to the LLM.
 
----
+If the spindle is running, the door cannot open — regardless of what the user says or what the LLM suggests.
 
-## Machine Skill
-
-Single source of truth.
+The Safety Skill is the final deterministic gate before any physical action executes.
 
 ---
 
 ## Maintenance Skill
 
-Transforms symptoms into structured diagnostics.
+Analyzes user-reported symptoms (noise, vibration, error codes) and produces structured diagnostics:
 
-The LLM explains.
+- failure type (mechanical, electrical, hydraulic)
+- severity level (low, medium, high, critical)
+- probable causes
+- recommended actions
+- whether the operator can fix it or if certified service is required
+- whether production must stop immediately
 
-The skill decides.
+The LLM explains the diagnosis naturally — but the Maintenance Skill determines the diagnosis itself.
 
 ---
 
 ## Learner Memory
 
-Builds a long-term learning profile.
+Tracks operator progress across sessions without storing conversation transcripts:
 
-Tracks
-
-- language
-- experience
-- mistakes
+- preferred language
+- skill level (beginner, intermediate, advanced)
 - completed lessons
-- safety performance
+- recurring mistakes
+- safety compliance score
+- session count
 
-without storing unnecessary data.
+This profile allows the assistant to personalize greetings, adapt explanations to experience level, and reference past struggles naturally.
 
 ---
 
 ## Sales Skill
 
-Allows the assistant to answer commercial questions without inventing numbers.
+Provides authoritative commercial data so the assistant can answer pricing, ROI, and purchasing questions without hallucinating numbers:
+
+- base price range
+- annual maintenance costs
+- efficiency gains vs manual lathes
+- precision specifications
+- throughput improvements
+
+The LLM sells confidently — but every number comes from the Sales Skill, not from the model's imagination.
 
 ---
 
@@ -364,102 +386,122 @@ Allows the assistant to answer commercial questions without inventing numbers.
 
 ## Training
 
-...
+Vocational schools and technical institutes can use Lathe Trainer to provide every student with a personal CNC instructor that speaks their language and adapts to their skill level — without requiring one human instructor per student.
 
 ## Sales
 
-...
+Machine dealers can offer immersive product demonstrations to potential buyers, allowing them to explore the machine in XR and ask commercial questions that are answered with real specifications rather than hallucinated estimates.
 
 ## Maintenance
 
-...
+Factory maintenance teams can use the assistant to diagnose issues on the shop floor, receive structured troubleshooting steps, and determine whether a problem requires certified service — reducing downtime and preventing unsafe repairs.
 
 ## Knowledge Transfer
 
-...
+Experienced technicians preparing for retirement can record their expertise in structured knowledge documents that the assistant transforms into interactive, contextual guidance for the next generation.
 
 ## Technical Support
 
-...
+OEMs and machine manufacturers can reduce support costs by embedding the assistant in their machines, allowing operators to troubleshoot issues independently before escalating to human support.
 
 ## Education
 
-...
+Engineering students studying manufacturing processes can interact with a full-scale CNC lathe in XR without access to physical equipment — democratizing technical education beyond well-funded institutions.
 
 ---
 
 # Screenshot Workflow
 
-Explain Quest limitation.
+Meta Quest's WebXR environment does not allow programmatic screenshot capture for security reasons.
 
-Explain why Share Target is used.
+To enable vision capabilities, Lathe Trainer implements a Share Target workflow:
 
-Explain why screenshots are intentionally optional.
+1. User asks a vision-related question ("what button is this?")
+2. Assistant instructs user to take a native screenshot (Meta Button + Right Trigger)
+3. User shares the screenshot to Lathe Trainer via Quest's share menu
+4. Image is sent to the multimodal AI model alongside the question
+5. Assistant identifies the component or button from the image and explains
+
+This approach respects platform security while providing reliable vision analysis when needed.
+
+Screenshots are intentionally optional — the assistant functions fully without them using spatial context and component proximity.
 
 ---
 
 # Why Mixed Reality
 
-The project is not XR for the sake of XR.
+This project is not XR for the sake of novelty.
 
-XR is the bridge between:
+XR solves a fundamental problem in industrial training:
 
-Human
+**Context.**
 
-↓
+Explaining a CNC component using text or video requires the learner to mentally map abstract descriptions to physical reality.
 
-Machine
+In XR, the assistant can:
 
-↓
+- highlight the exact component being discussed
+- show the operator where they need to stand
+- demonstrate tool paths in 3D space
+- explain safety zones visually
+- open the machine door and reveal internal components
 
-Knowledge
+Without spatial context, many industrial interactions lose clarity.
 
-Without spatial context, many interactions lose meaning.
+XR makes the relationship between human, machine, and knowledge direct and unambiguous.
 
 ---
 
 # Current Limitations
 
-Be transparent.
+This is a prototype demonstrating architectural feasibility.
 
-- Vision depends on user-shared screenshots.
-- Internet connection required.
-- Prototype stage.
+Current constraints include:
+
+- **Vision depends on manual screenshot sharing** — programmatic capture is blocked by WebXR security policies
+- **Internet connection required** — inference runs on NVIDIA NIM cloud API
+- **Single machine type** — currently supports CNC turning centers only
+- **Prototype 3D assets** — industrial-grade CAD models would improve realism
+- **No PLC integration** — machine state is simulated rather than read from real controllers
+
+These limitations are architectural choices suitable for a research prototype, not fundamental barriers.
 
 ---
 
 # Future Roadmap
 
-- Offline inference
-- Additional machine families
-- PLC integration
-- ERP integration
-- Predictive maintenance
-- Digital factory support
+- **Offline inference** — local LLM deployment for factory environments with restricted internet access
+- **Additional machine families** — milling centers, grinding machines, wire EDM, laser cutters
+- **PLC integration** — real-time machine state reading via OPC-UA or Modbus
+- **ERP integration** — connect to production schedules and work orders
+- **Predictive maintenance** — analyze sensor data trends to predict component failures before they occur
+- **Digital factory support** — multi-machine environments with shared knowledge base
 
 ---
 
 # Research Opportunities
 
-Possible collaboration with:
+This project offers collaboration opportunities for:
 
-- Universities
-- Technical institutes
-- Machine manufacturers
-- Innovation programs
+- **Universities** — human-computer interaction, industrial AI, spatial computing research
+- **Technical institutes** — vocational training curriculum development and XR pedagogy
+- **Machine manufacturers** — embedded AI assistant integration in next-generation CNCs
+- **Innovation programs** — Horizon Europe, EUREKA clusters, national innovation funds
+- **Industrial research centers** — applied AI in manufacturing environments
 
 ---
 
 # Alignment with Italian Industrial Strategy
 
-Explain how the project supports
+This project directly supports priorities outlined by the Italian Ministry of Enterprises and Made in Italy:
 
-- Knowledge Valorization
-- Technology Transfer
-- Industrial Innovation
-- Workforce Upskilling
+- **Knowledge Valorization** — transforms static technical documentation into interactive, contextual knowledge
+- **Technology Transfer** — bridges the gap between engineering expertise and shop floor operators
+- **Industrial Innovation** — demonstrates practical application of AI in manufacturing beyond automation
+- **Workforce Upskilling** — provides accessible training infrastructure for operators at all skill levels
+- **Made in Italy Competitiveness** — reduces dependency on expensive foreign training systems
 
-in line with recent initiatives promoted by the Italian Ministry of Enterprises and Made in Italy.
+The architecture is designed to support Italian SMEs — who often lack resources for enterprise-grade industrial AI solutions.
 
 ---
 
