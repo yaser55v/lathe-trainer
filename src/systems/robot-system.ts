@@ -16,10 +16,10 @@ const STATE_CONFIG: Record<RobotVisualState, {
   animSpeed: number;
   glowColor: [number, number, number];
 }> = {
-  idle:      { emissive: 0.0, animSpeed: 0.6, glowColor: [1, 1, 1] },
+  idle: { emissive: 0.0, animSpeed: 0.6, glowColor: [1, 1, 1] },
   listening: { emissive: 2.0, animSpeed: 1.2, glowColor: [0.2, 1.0, 0.6] },
-  thinking:  { emissive: 1.5, animSpeed: 0.8, glowColor: [1.0, 0.9, 0.6] }, // Warm light gold
-  speaking:  { emissive: 3.5, animSpeed: 1.8, glowColor: [1, 1, 1] },
+  thinking: { emissive: 1.5, animSpeed: 0.8, glowColor: [1.0, 0.9, 0.6] }, // Warm light gold
+  speaking: { emissive: 3.5, animSpeed: 1.8, glowColor: [1, 1, 1] },
 };
 
 const LERP_SPEED = 6.0;
@@ -164,6 +164,7 @@ export class RobotSystem extends createSystem({
           transparent: true,
         });
         child.material = this.bellyMaterial;
+        return; // ← Done with BellyScreen; skip emissive-mesh collection below
       }
 
       const mat = child.material as MeshStandardMaterial;
@@ -252,12 +253,12 @@ export class RobotSystem extends createSystem({
     this.shaderTime += delta;
     if (this.bellyMaterial) {
       this.bellyMaterial.uniforms.time.value = this.shaderTime;
-      
+
       let shaderState = 0; // idle
       if (this.targetState === "listening") shaderState = 1;
       else if (this.targetState === "thinking") shaderState = 2;
       else if (this.targetState === "speaking") shaderState = 3;
-      
+
       this.bellyMaterial.uniforms.state.value = shaderState;
       this.bellyMaterial.uniforms.glowColor.value.copy(this.currentGlow);
     }
