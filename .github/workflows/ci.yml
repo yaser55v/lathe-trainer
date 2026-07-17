@@ -2,10 +2,10 @@
 # .github/workflows/ci.yml
 # Lathe Trainer — GitHub Actions CI Pipeline
 #
-# Stack: Vite 7 · TypeScript · Vitest · pnpm · Node 20
+# Stack: Vite 7 · TypeScript · Vitest · pnpm · Node 22
 #
 # Jobs
-#   ci  — install deps (cached) → run tests → build → upload dist artifact
+#   ci  — install deps (cached) → security audit → run tests → build → upload artifact
 #
 # Optional deployment (Netlify) is included as a separate job at the bottom,
 # gated behind a manual enable step. See the "deploy" job comments to activate.
@@ -33,66 +33,44 @@ jobs:
 
     steps:
       # ── Checkout ───────────────────────────────────────────────────────────
-      # Checks out the repository so the workflow has access to the source.
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # ── Node.js ────────────────────────────────────────────────────────────
-      # Pins Node 20 to match engines.node >= 20.19.0 in package.json.
-      # The built-in pnpm caching is handled separately below for fine-grained
-      # cache key control, so we leave cache: '' here.
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
       # ── pnpm ───────────────────────────────────────────────────────────────
-      # Installs pnpm via the official action. Pinned to major version 9 to
-      # avoid silent upgrade surprises. run_install: false — we run install
-      # ourselves after restoring the cache so the cache step is effective.
+      # Must be set up BEFORE setup-node so the node step can use pnpm's
+      # built-in cache integration. Pinned to major version 9.
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 9
-          run_install: false
 
-      # ── Dependency cache ───────────────────────────────────────────────────
-      # Caches the pnpm store (downloaded package tarballs) between runs.
-      # Cache key includes the OS and pnpm-lock.yaml hash — invalidates only
-      # when you add, remove, or update a dependency.
-      - name: Get pnpm store path
-        id: pnpm-store
-        shell: bash
-        run: echo "path=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
-
-      - name: Restore pnpm store cache
-        uses: actions/cache@v4
+      # ── Node.js ────────────────────────────────────────────────────────────
+      # Node 22 (current LTS). Node 20 was deprecated on GitHub Actions
+      # runners in September 2025. cache: 'pnpm' delegates store caching to
+      # the official pnpm integration — no manual cache step needed.
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          path: ${{ steps.pnpm-store.outputs.path }}
-          key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: |
-            pnpm-${{ runner.os }}-
+          node-version: "22"
+          cache: "pnpm"
 
       # ── Install dependencies ───────────────────────────────────────────────
       # --frozen-lockfile: fails loudly if pnpm-lock.yaml is out of sync with
-      # package.json. This is the correct CI flag — it prevents silent
-      # lock-file drift that works locally but breaks in production.
+      # package.json — prevents silent lock-file drift in CI.
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       # ── Security audit ─────────────────────────────────────────────────────
-      # Checks all installed packages against the npm vulnerability advisory
-      # database. --audit-level=high means the step only fails on high or
-      # critical severity issues — low/moderate advisories are reported but
-      # don't break the build, avoiding excessive noise on minor findings.
+      # Checks production dependencies only (--prod) against the npm advisory
+      # database. Only fails on high/critical CVEs — avoids noise from
+      # devDependency vulnerabilities that never reach production.
       - name: Security audit
         run: pnpm audit --prod --audit-level=high
 
       # ── Unit tests ─────────────────────────────────────────────────────────
-      # Runs vitest in single-pass mode (vitest run, mapped to pnpm test).
-      # The junit reporter writes machine-readable XML consumed by the next
-      # step. The verbose reporter keeps terminal output readable in the log.
-      # VITE_AI_API_KEY is not needed — tests run in Node environment.
+      # Runs vitest in single-pass mode (vitest run, mapped via pnpm test).
+      # The junit reporter writes XML uploaded as an artifact in the next step.
+      # VITE_AI_API_KEY is not needed — tests run in Node environment only.
       - name: Run unit tests
         run: |
           pnpm test -- \
@@ -100,8 +78,7 @@ jobs:
             --reporter=junit \
             --outputFile=test-results/junit.xml
 
-      # Uploads the JUnit XML as a workflow artifact so test results are
-      # browsable in the GitHub Actions summary for every run.
+      # Uploads JUnit XML so test results are browsable in the Actions summary.
       - name: Upload test results
         if: always()    # upload even when tests fail so failures are visible
         uses: actions/upload-artifact@v4
@@ -111,18 +88,15 @@ jobs:
           retention-days: 30
 
       # ── Production build ───────────────────────────────────────────────────
-      # Runs vite build → outputs to dist/
       # VITE_AI_API_KEY is injected from a GitHub Actions repository secret.
-      # If the secret is not set the build still succeeds — vite.config.ts
-      # guards against a missing key with a fallback empty string.
+      # Missing key is safe — vite.config.ts guards it with an empty string fallback.
       - name: Build (production)
         run: pnpm build
         env:
           VITE_AI_API_KEY: ${{ secrets.VITE_AI_API_KEY }}
 
       # ── Upload build artifact ──────────────────────────────────────────────
-      # Uploads dist/ so the compiled output is downloadable from every
-      # workflow run without needing to rebuild from source.
+      # Uploads dist/ so the compiled output is downloadable from every run.
       - name: Upload dist artifact
         uses: actions/upload-artifact@v4
         with:
@@ -148,16 +122,12 @@ jobs:
   #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
   #
   #   steps:
-  #     # Download the artifact built in the ci job.
-  #     # No rebuild required — same dist/ that passed tests.
   #     - name: Download dist artifact
   #       uses: actions/download-artifact@v4
   #       with:
   #         name: lathe-trainer-dist
   #         path: dist/
   #
-  #     # Deploy to Netlify using the official CLI.
-  #     # --prod promotes the deploy to the live URL instead of a preview URL.
   #     - name: Deploy to Netlify (production)
   #       run: |
   #         npm install -g netlify-cli
