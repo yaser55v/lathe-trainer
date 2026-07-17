@@ -1,0 +1,26 @@
+# .github/dependabot.yml
+# Keeps npm/pnpm dependencies up to date automatically.
+# Dependabot opens PRs when newer versions of dependencies are available,
+# which triggers the CI pipeline so you know immediately if an update breaks something.
+
+version: 2
+updates:
+  - package-ecosystem: "npm"   # covers pnpm projects
+    directory: "/"
+    schedule:
+      interval: "weekly"       # check every Monday — not so frequent it creates noise
+    open-pull-requests-limit: 5
+    groups:
+      # Group all devDependency updates into one PR to reduce noise
+      dev-dependencies:
+        dependency-type: "development"
+      # Production dependencies get individual PRs so regressions are easy to isolate
+      production-dependencies:
+        dependency-type: "production"
+
+  # Keep GitHub Actions versions up to date as well
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"      # Actions don't change often; monthly is enough
+    open-pull-requests-limit: 3
