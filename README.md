@@ -523,46 +523,29 @@ The real innovation lies in how deterministic engineering, spatial computing, in
 
 ---
 
-# Final Thought
-
-Artificial Intelligence should not replace industrial knowledge.
-
-It should make industrial knowledge available exactly when and where it is needed.
-
----
-
 # CI/CD
 
 This project uses **GitHub Actions** for continuous integration and build verification.
 
 Every push to `main` and every pull request targeting `main` triggers the pipeline automatically. The badge at the top of this file reflects the current build status in real time.
 
-## Pipeline steps
-
 | Step | What it does |
 |---|---|
-| **Checkout** | Clones the repository onto the runner |
-| **Setup Node.js** | Pins Node 20 to match `engines.node >= 20.19.0` in `package.json` |
-| **Setup pnpm** | Installs pnpm 9 via the official action |
-| **Cache** | Persists the pnpm store between runs using the `pnpm-lock.yaml` hash as the cache key — only busts when dependencies actually change |
-| **Install** | Runs `pnpm install --frozen-lockfile` — fails loudly if the lockfile is out of sync with `package.json` |
-| **Security audit** | Runs `pnpm audit --prod --audit-level=high` — checks production dependencies only, fails on high/critical CVEs |
-| **Test** | Runs the full Vitest suite (`pnpm test`). Outputs JUnit XML uploaded as a workflow artifact so results are browsable in the Actions summary |
-| **Build** | Runs `vite build` to produce the production `dist/` output. Fails the pipeline if the build errors |
-| **Upload artifact** | Uploads `dist/` as `lathe-trainer-dist` — downloadable from every workflow run without rebuilding |
+| **Install** | `pnpm install --frozen-lockfile` — fails if lockfile is out of sync |
+| **Security audit** | `pnpm audit --prod --audit-level=high` — checks production dependencies only |
+| **Test** | Full Vitest suite — results uploaded as a workflow artifact |
+| **Build** | `vite build` — fails the pipeline if the build errors |
+| **Artifact** | `dist/` uploaded and downloadable from every run |
 
-Dependabot is configured in [`.github/dependabot.yml`](./.github/dependabot.yml) to open weekly PRs for dependency updates and monthly PRs for GitHub Actions version bumps. Each Dependabot PR triggers the full pipeline automatically.
+Dependabot opens weekly PRs for dependency updates. Each PR triggers the full pipeline automatically.
 
-The workflow is defined in [`.github/workflows/ci.yml`](./.github/workflows/ci.yml).
+---
 
-## Stack
+# Final Thought
 
-- Node.js 20 · pnpm 9 · Vite 7 · Vitest · TypeScript
-- Runner: `ubuntu-latest`
+Artificial Intelligence should not replace industrial knowledge.
 
-## Optional deployment
-
-A Netlify deploy job is included in `ci.yml` but commented out. To enable it, uncomment the `deploy` job and add `NETLIFY_AUTH_TOKEN` and `NETLIFY_SITE_ID` as repository secrets.
+It should make industrial knowledge available exactly when and where it is needed.
 
 ---
 
