@@ -16,17 +16,12 @@ name: CI
 on:
   push:
     branches:
-      - main          # Run on every push to main
+      - main
   pull_request:
     branches:
-      - main          # Run on every PR targeting main
+      - main
 
 jobs:
-  # ───────────────────────────────────────────────────────────────────────────
-  # Job: ci
-  # Runs on every push and PR. Installs dependencies, runs the test suite,
-  # builds the production bundle, and uploads dist/ as a workflow artifact.
-  # ───────────────────────────────────────────────────────────────────────────
   ci:
     name: Install · Test · Build
     runs-on: ubuntu-latest
@@ -36,41 +31,42 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # ── Node.js ────────────────────────────────────────────────────────────
+      # Node 22 (current LTS). No cache: key here — caching is handled
+      # explicitly below with a hardcoded path to avoid pnpm store init issues.
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
       # ── pnpm ───────────────────────────────────────────────────────────────
-      # Must be set up BEFORE setup-node so the node step can use pnpm's
-      # built-in cache integration. Pinned to major version 9.
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 9
 
-      # ── Node.js ────────────────────────────────────────────────────────────
-      # Node 22 (current LTS). Node 20 was deprecated on GitHub Actions
-      # runners in September 2025. cache: 'pnpm' delegates store caching to
-      # the official pnpm integration — no manual cache step needed.
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      # ── Dependency cache ───────────────────────────────────────────────────
+      # Uses a hardcoded store path (~/.local/share/pnpm/store) to avoid the
+      # "packages field missing" error that occurs when pnpm store path is
+      # called before the store is initialized on a fresh runner.
+      - name: Restore pnpm store cache
+        uses: actions/cache@v4
         with:
-          node-version: "22"
-          cache: "pnpm"
+          path: ~/.local/share/pnpm/store
+          key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-${{ runner.os }}-
 
       # ── Install dependencies ───────────────────────────────────────────────
-      # --frozen-lockfile: fails loudly if pnpm-lock.yaml is out of sync with
-      # package.json — prevents silent lock-file drift in CI.
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       # ── Security audit ─────────────────────────────────────────────────────
-      # Checks production dependencies only (--prod) against the npm advisory
-      # database. Only fails on high/critical CVEs — avoids noise from
-      # devDependency vulnerabilities that never reach production.
+      # Production dependencies only. Fails on high/critical CVEs.
       - name: Security audit
         run: pnpm audit --prod --audit-level=high
 
       # ── Unit tests ─────────────────────────────────────────────────────────
-      # Runs vitest in single-pass mode (vitest run, mapped via pnpm test).
-      # The junit reporter writes XML uploaded as an artifact in the next step.
-      # VITE_AI_API_KEY is not needed — tests run in Node environment only.
       - name: Run unit tests
         run: |
           pnpm test -- \
@@ -78,9 +74,8 @@ jobs:
             --reporter=junit \
             --outputFile=test-results/junit.xml
 
-      # Uploads JUnit XML so test results are browsable in the Actions summary.
       - name: Upload test results
-        if: always()    # upload even when tests fail so failures are visible
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-results
@@ -88,15 +83,12 @@ jobs:
           retention-days: 30
 
       # ── Production build ───────────────────────────────────────────────────
-      # VITE_AI_API_KEY is injected from a GitHub Actions repository secret.
-      # Missing key is safe — vite.config.ts guards it with an empty string fallback.
       - name: Build (production)
         run: pnpm build
         env:
           VITE_AI_API_KEY: ${{ secrets.VITE_AI_API_KEY }}
 
       # ── Upload build artifact ──────────────────────────────────────────────
-      # Uploads dist/ so the compiled output is downloadable from every run.
       - name: Upload dist artifact
         uses: actions/upload-artifact@v4
         with:
@@ -107,18 +99,15 @@ jobs:
   # ───────────────────────────────────────────────────────────────────────────
   # Job: deploy (optional — disabled by default)
   #
-  # To activate Netlify deployment from GitHub Actions:
-  #   1. Uncomment the entire "deploy" job below.
-  #   2. Add two repository secrets in GitHub → Settings → Secrets → Actions:
-  #        NETLIFY_AUTH_TOKEN  (your personal access token from netlify.com)
-  #        NETLIFY_SITE_ID     (found under Site Configuration in Netlify dashboard)
-  #   3. Push to main — deployment runs automatically after CI passes.
+  # To activate:
+  #   1. Uncomment the deploy job below
+  #   2. Add repository secrets: NETLIFY_AUTH_TOKEN, NETLIFY_SITE_ID
   # ───────────────────────────────────────────────────────────────────────────
 
   # deploy:
   #   name: Deploy to Netlify
   #   runs-on: ubuntu-latest
-  #   needs: ci                         # only runs if the ci job passes
+  #   needs: ci
   #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
   #
   #   steps:
