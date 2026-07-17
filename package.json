@@ -11,9 +11,9 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@iwsdk/core": "0.3.1",
-    "@pmndrs/uikit": "1.0.73",
-    "@pmndrs/uikit-lucide": "^1.0.73",
+    "@iwsdk/core": "0.4.2",
+    "@pmndrs/uikit": "1.0.74",
+    "@pmndrs/uikit-lucide": "^1.0.74",
     "@preact/signals-core": "1.14.2",
     "three": "npm:super-three@0.181.0"
   },
@@ -38,7 +38,7 @@
   "pnpm": {
     "overrides": {
       "three": "npm:super-three@0.181.0",
-      "@pmndrs/uikit": "1.0.73"
+      "@pmndrs/uikit": "1.0.74"
     }
   }
 }
