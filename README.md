@@ -560,24 +560,9 @@ The workflow is defined in [`.github/workflows/ci.yml`](./.github/workflows/ci.y
 - Node.js 20 · pnpm 9 · Vite 7 · Vitest · TypeScript
 - Runner: `ubuntu-latest`
 
-## Adding the API key secret
-
-The build passes `VITE_AI_API_KEY` to Vite at build time. To set it:
-
-1. Go to your repository on GitHub → **Settings → Secrets and variables → Actions**
-2. Click **New repository secret**
-3. Name: `VITE_AI_API_KEY`, value: your NVIDIA NIM API key
-
-The build works without it (the key defaults to an empty string), but setting it ensures the production artifact matches your local build exactly.
-
 ## Optional deployment
 
-A Netlify deploy job is included in `ci.yml` but commented out. To enable it:
-
-1. Uncomment the `deploy` job at the bottom of `.github/workflows/ci.yml`
-2. Add two repository secrets: `NETLIFY_AUTH_TOKEN` and `NETLIFY_SITE_ID`
-
-The deploy job runs only when the `ci` job passes **and** the source branch is `main`, so pull requests never reach production.
+A Netlify deploy job is included in `ci.yml` but commented out. To enable it, uncomment the `deploy` job and add `NETLIFY_AUTH_TOKEN` and `NETLIFY_SITE_ID` as repository secrets.
 
 ---
 
