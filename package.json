@@ -18,18 +18,18 @@
     "three": "npm:super-three@0.181.0"
   },
   "devDependencies": {
-    "@iwsdk/vite-plugin-dev": "0.3.1",
+    "@iwsdk/vite-plugin-dev": "0.4.2",
     "@iwsdk/vite-plugin-gltf-optimizer": "^0.4.2",
-    "@iwsdk/vite-plugin-uikitml": "0.3.1",
-    "@meta-quest/hzdb": "^1.0.0",
+    "@iwsdk/vite-plugin-uikitml": "0.4.2",
+    "@meta-quest/hzdb": "^1.3.2",
     "@types/three": "*",
     "@vitest/ui": "^4.1.9",
     "jsdom": "^29.1.1",
     "playwright": "1.60.0",
-    "typescript": "^5.5.0",
-    "vite": "^7.1.4",
-    "vite-plugin-mkcert": "^1.17.0",
-    "vite-plugin-pwa": "^0.21.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.1.5",
+    "vite-plugin-mkcert": "^2.1.0",
+    "vite-plugin-pwa": "^1.3.0",
     "vitest": "^4.1.9"
   },
   "engines": {
