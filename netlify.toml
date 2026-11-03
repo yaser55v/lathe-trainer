@@ -5,7 +5,7 @@
   publish   = "dist"
 
 [build.environment]
-  NODE_VERSION = "20"
+  NODE_VERSION = "22"
 
 # ── API Proxy ──────────────────────────────────────────────────────────────
 # In development, Vite proxies /v1/* → https://integrate.api.nvidia.com/v1/*
