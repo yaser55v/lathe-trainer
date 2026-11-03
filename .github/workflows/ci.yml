@@ -43,7 +43,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 10
+          version: 11
 
       # ── Dependency cache ───────────────────────────────────────────────────
       # Uses a hardcoded store path (~/.local/share/pnpm/store) to avoid the
