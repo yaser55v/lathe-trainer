@@ -164,7 +164,7 @@ export class AssistantService {
 
   private abortController: AbortController | null = null;
   private voiceInput: VoiceInputController | null = null;
-  private tts: NativeTTSController;
+  private tts: WebAudioTTSController;
   private cancelDemo: (() => void) | null = null;
   demoCallbacks: DemoCallbacks | null = null;
   private screenshotService: any = null;
@@ -181,7 +181,8 @@ export class AssistantService {
       knowledgeBase: opts.knowledgeBase,
       sceneContext: opts.sceneContext,
     });
-    this.tts = new NativeTTSController(
+    this.tts = new WebAudioTTSController(
+      this.apiKey,
       () => this.emit({ type: "speaking_end" }),
       () => this.emit({ type: "idle" }),
     );
@@ -823,7 +824,157 @@ function detectLanguage(text: string): SupportedLang {
   return best;
 }
 
+// ─── WebAudioTTSController ────────────────────────────────────────────────────
+//
+// Plays TTS audio through the Web Audio API so Chrome tab/screen recording
+// extensions can capture it. The pipeline is:
+//
+//   NVIDIA Magpie TTS /v1/audio/synthesize (multipart/form-data, same API key)
+//     → WAV ArrayBuffer → AudioContext.decodeAudioData
+//       → AudioBufferSourceNode → AudioContext.destination
+//
+// This audio path flows through the browser's Web Audio graph, which Chrome
+// tab capture (chrome.tabCapture / getDisplayMedia) intercepts correctly.
+//
+// If the NVIDIA TTS call fails (network error, quota, unsupported language)
+// the controller falls back to NativeTTSController (speechSynthesis) so the
+// user always hears a response.
+//
+// Magpie-Multilingual voice IDs — sourced from GET /v1/audio/list_voices on the live endpoint.
+// Ray is used wherever available (consistent voice across languages).
+// ZH-CN, HI-IN, PT-BR have no Ray — using closest neutral alternative.
+const NVIDIA_TTS_VOICES: Record<SupportedLang, string> = {
+  en: "Magpie-Multilingual.EN-US.Ray",
+  it: "Magpie-Multilingual.IT-IT.Ray",
+  ar: "Magpie-Multilingual.AR-XA.Ray",
+  fr: "Magpie-Multilingual.FR-FR.Ray",
+  de: "Magpie-Multilingual.DE-DE.Ray",
+  es: "Magpie-Multilingual.ES-US.Ray",
+  pt: "Magpie-Multilingual.PT-BR.Diego",    // no Ray for PT-BR
+  ja: "Magpie-Multilingual.JA-JP.Ray",
+  zh: "Magpie-Multilingual.ZH-CN.Long",     // no Ray for ZH-CN
+  hi: "Magpie-Multilingual.HI-IN.Leo",      // no Ray for HI-IN
+  ru: "Magpie-Multilingual.EN-US.Ray",      // Russian not supported — fallback to EN; NativeTTS handles ru
+};
+
+// BCP-47 language codes as expected by the Magpie /v1/audio/synthesize `language` field
+const NVIDIA_TTS_LANG: Record<SupportedLang, string> = {
+  en: "en-US", it: "it-IT", ar: "ar-XA",
+  fr: "fr-FR", de: "de-DE", es: "es-US",
+  pt: "pt-BR", ja: "ja-JP", zh: "zh-CN",
+  hi: "hi-IN", ru: "en-US",  // Russian not supported by Magpie — use EN so fallback triggers cleanly
+};
+
+// Languages where Magpie TTS has no support — force fallback to speechSynthesis
+const NVIDIA_TTS_UNSUPPORTED = new Set<SupportedLang>(["ru"]);
+
+class WebAudioTTSController {
+  private readonly apiKey: string;
+  private readonly fallback: NativeTTSController;
+  private currentSource: AudioBufferSourceNode | null = null;
+  private stopped = false;
+
+  constructor(apiKey: string, onDone: () => void, onIdle: () => void) {
+    this.apiKey = apiKey;
+    this.fallback = new NativeTTSController(onDone, onIdle);
+  }
+
+  speak(text: string, lang: SupportedLang, onDone?: () => void, onTokenTrigger?: (token: string) => void): void {
+    this.stop();
+    this.stopped = false;
+
+    // Skip Web Audio path for unsupported languages — go straight to speechSynthesis
+    if (NVIDIA_TTS_UNSUPPORTED.has(lang)) {
+      this.fallback.speak(text, lang, onDone, onTokenTrigger);
+      return;
+    }
+
+    this._speakViaWebAudio(text, lang, onDone, onTokenTrigger);
+  }
+
+  private async _speakViaWebAudio(
+    text: string,
+    lang: SupportedLang,
+    onDone?: () => void,
+    onTokenTrigger?: (token: string) => void,
+  ): Promise<void> {
+    if (this.stopped) return;
+
+    try {
+      const audioBuffer = await this._fetchTTSAudio(text, lang);
+
+      if (this.stopped) return;
+
+      // Ensure AudioContext is running (browsers suspend it until user gesture)
+      if (!sharedAudioCtx) sharedAudioCtx = new AudioContext();
+      if (sharedAudioCtx.state === "suspended") await sharedAudioCtx.resume();
+
+      const source = sharedAudioCtx.createBufferSource();
+      source.buffer = audioBuffer;
+      source.connect(sharedAudioCtx.destination);
+      this.currentSource = source;
+
+      source.onended = () => {
+        if (this.stopped) return;
+        this.currentSource = null;
+        onDone?.();
+      };
+
+      source.start(0);
+    } catch (err) {
+      // API failed — fall back to speechSynthesis so user always hears a response
+      console.warn("[WebAudioTTS] NVIDIA TTS failed, falling back to speechSynthesis:", err);
+      if (!this.stopped) {
+        this.fallback.speak(text, lang, onDone, onTokenTrigger);
+      }
+    }
+  }
+
+  private async _fetchTTSAudio(text: string, lang: SupportedLang): Promise<AudioBuffer> {
+    const voice = NVIDIA_TTS_VOICES[lang] ?? NVIDIA_TTS_VOICES.en;
+    const language = NVIDIA_TTS_LANG[lang] ?? "en-US";
+
+    // Magpie TTS API requires multipart/form-data — not JSON
+    const form = new FormData();
+    form.append("text", text);
+    form.append("language", language);
+    form.append("voice", voice);
+
+    const response = await fetch("/nvidia-tts/v1/audio/synthesize", {
+      method: "POST",
+      headers: {
+        // Do NOT set Content-Type here — the browser sets it automatically
+        // including the multipart boundary when using FormData
+        "Authorization": `Bearer ${this.apiKey}`,
+      },
+      body: form,
+    });
+
+    if (!response.ok) {
+      const detail = await response.text().catch(() => "");
+      throw new Error(`TTS API ${response.status}: ${detail}`);
+    }
+
+    // Response is a WAV file (audio/wav), 16-bit mono 22050 Hz
+    const arrayBuffer = await response.arrayBuffer();
+
+    if (!sharedAudioCtx) sharedAudioCtx = new AudioContext();
+    return sharedAudioCtx.decodeAudioData(arrayBuffer);
+  }
+
+  stop(): void {
+    this.stopped = true;
+    this.fallback.stop();
+    if (this.currentSource) {
+      try { this.currentSource.stop(); } catch { /* already stopped */ }
+      this.currentSource = null;
+    }
+  }
+}
+
 // ─── NativeTTSController ──────────────────────────────────────────────────────
+// Retained as fallback for WebAudioTTSController and direct use when no API key
+// is available.
 
 const PREFERRED_VOICES: Record<SupportedLang, string[]> = {
   en: ["Google UK English Male", "Google US English"],

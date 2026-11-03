@@ -1,6 +1,13 @@
 packages:
   - '.'
-
+overrides:
+  three: npm:super-three@0.181.0
+  '@pmndrs/uikit': '1.0.73'
+  zod: '>=4.6.6'
+allowBuilds:
+  '@meta-quest/hzdb': true
+  esbuild: true
+  sharp: true
 onlyBuiltDependencies:
   - '@meta-quest/hzdb'
   - esbuild

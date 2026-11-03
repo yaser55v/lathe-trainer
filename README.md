@@ -29,7 +29,7 @@
 ## AI & Backend
 - **NVIDIA Nemotron 3 Nano Omni 30B** — multimodal foundation model (text, vision, audio)
 - **NVIDIA NIM API** — inference endpoint
-- **Web Speech Synthesis API** — native TTS for XR audio output
+- **NVIDIA Magpie TTS Multilingual** — neural text-to-speech, 12 languages, routed through Web Audio API for XR compatibility and screen recording capture
 - **MediaRecorder API** — voice input capture
 
 ## Testing & Quality
@@ -284,7 +284,7 @@ This allows the AI to remain conversational while ensuring that critical industr
 | Natural language understanding | ✓ | Extended with industrial context |
 | Multilingual conversations | ✓ | User language persistence |
 | Speech recognition | ✓ | XR interaction workflow |
-| Speech generation | ✓ | Native XR presentation |
+| Speech generation | ✓ (understanding only) | ✓ Neural TTS via Magpie Multilingual |
 | Vision analysis | ✓ | Context-aware industrial interpretation |
 | Spatial awareness | — | ✓ |
 | Machine state awareness | — | ✓ |
@@ -315,7 +315,7 @@ The AI pipeline represents the complete flow from user input to machine action:
 3. **Prompt Builder** — assembles a structured system prompt containing authoritative facts (not requests for reasoning)
 4. **Foundation Model** — NVIDIA Nemotron Omni generates a natural language explanation based on deterministic facts
 5. **Action Parser** — extracts action tokens (highlight component, open door, etc.) from the response
-6. **Presentation Layer** — renders visual highlights in 3D space and speaks the response via native TTS
+6. **Presentation Layer** — renders visual highlights in 3D space and speaks the response via NVIDIA Magpie TTS, played through Web Audio API for full XR and screen recording compatibility
 7. **Machine State Update** — action execution updates the deterministic state, closing the loop
 
 This architecture ensures that every industrial fact the AI references was computed deterministically rather than guessed probabilistically.
@@ -554,3 +554,4 @@ It should make industrial knowledge available exactly when and where it is neede
 - **CNC Machine Model** — [Universal Turning Center (CGTrader)](https://www.cgtrader.com/free-3d-models/aircraft/commercial-aircraft/cnc-lathe-universal-turning-center-0751c817-2899-4308-92d0-5e49db7ffd36)
 - **Robot Model** — [Sketchfab](https://skfb.ly/oJEqx)
 - **AI Model** — [NVIDIA Nemotron 3 Nano Omni 30B](https://build.nvidia.com/nvidia/nemotron-3-nano-omni-30b-a3b-reasoning)
+- **TTS Model** — [NVIDIA Magpie TTS Multilingual](https://build.nvidia.com/nvidia/magpie-tts-multilingual)
