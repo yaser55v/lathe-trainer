@@ -20,6 +20,17 @@
   [redirects.headers]
     X-Forwarded-Host = "integrate.api.nvidia.com"
 
+# NVIDIA Magpie TTS — hosted NVCF function endpoint.
+# Proxied under /nvidia-tts/* to avoid colliding with the /v1 LLM proxy.
+[[redirects]]
+  from   = "/nvidia-tts/*"
+  to     = "https://877104f7-e885-42b9-8de8-f6e4c6303969.invocation.api.nvcf.nvidia.com/:splat"
+  status = 200
+  force  = true
+
+  [redirects.headers]
+    X-Forwarded-Host = "877104f7-e885-42b9-8de8-f6e4c6303969.invocation.api.nvcf.nvidia.com"
+
 # ── SPA fallback ───────────────────────────────────────────────────────────
 # All other unmatched routes serve index.html for client-side navigation.
 [[redirects]]
