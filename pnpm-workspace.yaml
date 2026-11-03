@@ -1,6 +1,11 @@
 packages:
   - '.'
 
+allowBuilds:
+  '@meta-quest/hzdb': true
+  esbuild: true
+  sharp: true
+
 onlyBuiltDependencies:
   - '@meta-quest/hzdb'
   - esbuild

@@ -159,10 +159,20 @@ export default defineConfig(({ mode }) => {
       port: 8081,
       open: true,
       proxy: {
+        // NVIDIA LLM API (chat completions, audio transcription)
         "/v1": {
           target: "https://integrate.api.nvidia.com",
           changeOrigin: true,
           secure: true,
+        },
+        // NVIDIA Magpie TTS — hosted NVCF function endpoint.
+        // Proxied under /nvidia-tts/ to avoid colliding with the /v1 LLM proxy.
+        // The rewrite strips the /nvidia-tts prefix before forwarding.
+        "/nvidia-tts": {
+          target: "https://877104f7-e885-42b9-8de8-f6e4c6303969.invocation.api.nvcf.nvidia.com",
+          changeOrigin: true,
+          secure: true,
+          rewrite: (path: string) => path.replace(/^\/nvidia-tts/, ""),
         },
       },
     },
