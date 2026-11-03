@@ -42,8 +42,7 @@ jobs:
       # ── pnpm ───────────────────────────────────────────────────────────────
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 11
+        # version is read from packageManager field in package.json
 
       # ── Dependency cache ───────────────────────────────────────────────────
       # Uses a hardcoded store path (~/.local/share/pnpm/store) to avoid the
