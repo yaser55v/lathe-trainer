@@ -4,6 +4,10 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  three: npm:super-three@0.181.0
+  '@pmndrs/uikit': 1.0.73
+
 importers:
 
   .:
@@ -3150,6 +3154,9 @@ packages:
   stylis@4.3.6:
     resolution: {integrity: sha512-yQ3rwFWRfwNUY7H5vpU0wfdkNSnvnJinhF9830Swlaxl03zsOjCfmX0ugac+3LtK0lYSgwL/KXc8oYL3mG4YFQ==}
 
+  super-three@0.165.0:
+    resolution: {integrity: sha512-eWPg+uVNXNi/49Hlge87PIbBlreyrtsfplQpY/UZ5sgcr9z9PL/w3YKj2vG9FQaSqOleP3me6NqDvL4JPGT/WA==}
+
   super-three@0.181.0:
     resolution: {integrity: sha512-ffemt+MKDPVVkQwG1nzW/5SXHROVqcXCCj/sR6V8nlt7X9qy8vEngoVyeHmsuXjwuSWBBihlVIm+8QUZ1MJDfg==}
 
@@ -3188,12 +3195,6 @@ packages:
     resolution: {integrity: sha512-UOlTgPIeqUURcwaG8knxvBaruwZlC4X3/WSHEFO7rYvMVv/YNUrkfFEszvfj36pXV88dCHoHNnIp0PifkirnTQ==}
     peerDependencies:
       three: '>= 0.159.0'
-
-  three@0.165.0:
-    resolution: {integrity: sha512-cc96IlVYGydeceu0e5xq70H8/yoVT/tXBxV/W8A/U6uOq7DXc4/s1Mkmnu6SqoYGhSRWWYFOhVwvq6V0VtbplA==}
-
-  three@0.181.0:
-    resolution: {integrity: sha512-KGf6EOCOQGshXeleKxpxhbowQwAXR2dLlD93egHtZ9Qmk07Saf8sXDR+7wJb53Z1ORZiatZ4WGST9UsVxhHEbg==}
 
   tinybench@2.9.0:
     resolution: {integrity: sha512-0+DUvqWMValLmha6lr4kD8iAMK1HzV0/aKnCtWb9v9641TnP/MFb7Pc2bxoxQjTXAErryXVgUOfv2YqNllqGeg==}
@@ -4738,7 +4739,7 @@ snapshots:
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
       styled-components: 6.4.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      three: 0.165.0
+      three: super-three@0.165.0
     transitivePeerDependencies:
       - '@types/react'
       - css-to-react-native
@@ -4748,7 +4749,7 @@ snapshots:
   '@iwer/sem@0.2.5(iwer@2.2.1)':
     dependencies:
       iwer: 2.2.1
-      three: 0.165.0
+      three: super-three@0.165.0
       ts-proto: 2.11.8
 
   '@iwsdk/core@0.3.1(react@19.2.7)':
@@ -4763,7 +4764,7 @@ snapshots:
       '@pmndrs/uikitml': 0.1.12(super-three@0.181.0)
       '@preact/signals-core': 1.14.2
       elics: 3.4.2
-      three: 0.181.0
+      three: super-three@0.181.0
       three-mesh-bvh: 0.9.10(super-three@0.181.0)
     transitivePeerDependencies:
       - '@types/react'
@@ -6958,6 +6959,8 @@ snapshots:
 
   stylis@4.3.6: {}
 
+  super-three@0.165.0: {}
+
   super-three@0.181.0: {}
 
   supports-color@7.2.0:
@@ -6996,10 +6999,6 @@ snapshots:
   three-mesh-bvh@0.9.10(super-three@0.181.0):
     dependencies:
       three: super-three@0.181.0
-
-  three@0.165.0: {}
-
-  three@0.181.0: {}
 
   tinybench@2.9.0: {}
 
